@@ -1,11 +1,13 @@
 from pathlib import Path
 
+from config.env import env
+
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+env.read_env(BASE_DIR / '.env')
 
-
-SECRET_KEY = 'django-insecure-*44juz^a(752$j#8m7=w45$7fmi_z-t3e9v8kiojqay)b((gp3'
-DEBUG = True
-ALLOWED_HOSTS = []
+SECRET_KEY = env.str('SECRET_KEY')
+DEBUG = env.bool('DEBUG')
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 
 INSTALLED_APPS = [
@@ -15,6 +17,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # packages
+    'drf_yasg',
+    'rest_framework',
+    'rest_framework_simplejwt',
+
+    # local apps
+    'core.apps.shared',
+    'core.apps.authentication',
+    'core.apps.accounts',
 ]
 
 MIDDLEWARE = [
@@ -25,6 +36,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.apps.shared.middlewares.response_time.ResponseTimeMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -50,11 +62,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'meridyn_pharma_db',
-        'USER': 'postgres',
-        'PASSWORD': '20090912',
-        'HOST': 'db',
-        'PORT': '5432',
+        'NAME': env.str('POSTGRES_DB'),
+        'USER': env.str('POSTGRES_USER'),
+        'PASSWORD': env.str('POSTGRES_PASSWORD'),
+        'HOST': env.str('POSTGRES_HOST'),
+        'PORT': env.str('POSTGRES_PORT'),
     }
 }
 
@@ -92,3 +104,5 @@ MEDIA_ROOT = BASE_DIR / 'resources/media'
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'accounts.User'
