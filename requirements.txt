@@ -1,0 +1,6 @@
+asgiref==3.11.0
+Django==5.2
+sqlparse==0.5.3
+uvicorn
+gunicorn
+psycopg2-binary
