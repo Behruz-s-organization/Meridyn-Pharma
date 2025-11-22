@@ -1,2 +1,4 @@
 from .base import *
-from .region import Region
+from .region import *
+from .district import *
+from .place import *
