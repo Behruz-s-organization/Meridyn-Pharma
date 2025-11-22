@@ -1,3 +1,6 @@
+# django
+from django.shortcuts import get_object_or_404
+
 # rest framework
 from rest_framework import generics, permissions
 
@@ -57,5 +60,53 @@ class DistrictCreateApiView(generics.CreateAPIView, ResponseMixin):
                     status_code=201
                 )
             return self.failure_response(data=serializer.errors, message='malumot qoshilmadi')
+        except Exception as e:
+            return self.error_response(data=str(e), message='xatolik')
+        
+    
+class DistrictDeleteUpdateApiView(generics.GenericAPIView, ResponseMixin):
+    serializer_class = district_serializers.DistrictSerializer
+    queryset = District.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+
+    @swagger_auto_schema(
+        responses={
+            200: base_serializers.SuccessResponseSerializer(),
+            400: base_serializers.BaseResponseSerializer(),
+            500: base_serializers.BaseResponseSerializer(),
+        }
+    )
+    def patch(self, request, id):
+        try:
+            obj = get_object_or_404(District, id=id, user=request.user)
+            serializer = self.serializer_class(data=request.data, instance=obj)
+            if serializer.is_valid():
+                name = serializer.validated_data.get('name')
+                obj.name = name 
+                obj.save()
+                return self.success_response(
+                    data=district_serializers.DistrictSerializer(obj).data,
+                    message='Malumot tahrilandi'
+                )
+            return self.failure_response(
+                data=serializer.errors,
+                message='Malumot tahrirlanmadi'
+            )
+        except Exception as e:
+            return self.error_response(data=str(e), message='xatolik')
+
+    
+    @swagger_auto_schema(
+        responses={
+            204: base_serializers.SuccessResponseSerializer(),
+            400: base_serializers.BaseResponseSerializer(),
+            500: base_serializers.BaseResponseSerializer(),
+        }
+    )
+    def delete(self, request, id):
+        try:
+            obj = get_object_or_404(District, id=id, user=request.user)
+            obj.delete()
+            return self.success_response(message='Malumot ochirildi', status_code=204)
         except Exception as e:
             return self.error_response(data=str(e), message='xatolik')

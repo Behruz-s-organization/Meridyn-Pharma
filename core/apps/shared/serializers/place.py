@@ -32,7 +32,7 @@ class PlaceCreateSerializer(serializers.Serializer):
     district_id = serializers.IntegerField()
     
     def validate_name(self, value):
-        if not Place.objects.filter(name=value).exists():
+        if Place.objects.filter(name=value).exists():
             raise serializers.ValidationError({"name": "Place bu name bilan mavjud"})
         return value
     
@@ -54,3 +54,34 @@ class PlaceCreateSerializer(serializers.Serializer):
                 user=self.context.get('user'),
             )
 
+
+
+class PlaceUpdateSerializer(serializers.Serializer):
+    name = serializers.CharField(required=False)
+    latitude = serializers.FloatField(required=False)
+    longitude = serializers.FloatField(required=False)
+    extra_location = serializers.JSONField(required=False)
+    district_id = serializers.IntegerField(required=False)
+    
+    def validate_name(self, value):
+        if not Place.objects.filter(name=value).exists():
+            raise serializers.ValidationError({"name": "Place bu name bilan mavjud"})
+        return value
+    
+    def validate(self, data):
+        if data.get('district_id'):
+            district = District.objects.filter(id=data['district_id']).first()
+            if not district:
+                raise serializers.ValidationError({"district_id": "District not found"})
+            data['district'] = district
+        return data
+
+    def update(self, instance, validated_data):
+        with transaction.atomic():
+            instance.name = validated_data.get('name', instance.name)
+            instance.latitude = validated_data.get('latitude', instance.latitude)
+            instance.longitude = validated_data.get('longitude', instance.longitude)
+            instance.extra_location = validated_data.get('extra_location', instance.extra_location)
+            instance.district = validated_data.get('district', instance.district)
+            instance.save()
+            return instance

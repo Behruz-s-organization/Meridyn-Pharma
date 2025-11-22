@@ -20,6 +20,7 @@ urlpatterns = [
         [
             path('list/', dis_view.DistrictListApiView.as_view(), name='district-list-api'),
             path('create/', dis_view.DistrictCreateApiView.as_view(), name='district-create-api'),
+            path('<int:id>/', dis_view.DistrictDeleteUpdateApiView.as_view(), name='district-update-delete-api'),
         ],
     )),
     # place
@@ -27,6 +28,7 @@ urlpatterns = [
         [
             path('list/', pl_view.PlaceListApiView.as_view(), name='place-list-api'),
             path('create/', pl_view.PlaceCreateApiView.as_view(), name='place-create-api'),
+            path('<int:id>/', pl_view.PlaceDeleteUpdateApiView.as_view(), name='place-update-delete-api'),
         ]
     )),
 ]   
