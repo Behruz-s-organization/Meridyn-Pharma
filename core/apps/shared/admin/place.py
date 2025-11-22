@@ -6,5 +6,5 @@ from core.apps.shared.models import Place
 
 @admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
-    list_display = ['name', 'user', 'district']
+    list_display = ['id', 'name', 'user', 'district']
     search_fields = ['name']

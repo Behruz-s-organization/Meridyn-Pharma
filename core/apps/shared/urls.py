@@ -6,6 +6,8 @@ from core.apps.shared.views import region as region_view
 from core.apps.shared.views import district as dis_view
 # shared place view
 from core.apps.shared.views import place as pl_view
+# shared doctor view
+from core.apps.shared.views import doctor as dc_view
 
 
 urlpatterns = [
@@ -29,6 +31,14 @@ urlpatterns = [
             path('list/', pl_view.PlaceListApiView.as_view(), name='place-list-api'),
             path('create/', pl_view.PlaceCreateApiView.as_view(), name='place-create-api'),
             path('<int:id>/', pl_view.PlaceDeleteUpdateApiView.as_view(), name='place-update-delete-api'),
+        ]
+    )),
+    # doctor
+    path('doctor/', include(
+        [
+            path('list/', dc_view.DoctorListApiView.as_view(), name='doctor-list-api'),
+            path('create/', dc_view.DoctorCreateApiView.as_view(), name='doctor-create-api'),
+            path('<int:id>/', dc_view.DoctorDeleteUpdateApiView.as_view(), name='doctor-update-delete-api'),
         ]
     )),
 ]   

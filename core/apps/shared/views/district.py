@@ -55,7 +55,7 @@ class DistrictCreateApiView(generics.CreateAPIView, ResponseMixin):
                 name = serializer.validated_data.get('name')
                 obj = District.objects.create(name=name, user=request.user)
                 return self.success_response(
-                    data=district_serializers.DistrictSerializer(obj),
+                    data=district_serializers.DistrictSerializer(obj).data,
                     message='malumot qoshildi', 
                     status_code=201
                 )
