@@ -48,7 +48,7 @@ class DistrictCreateApiView(generics.CreateAPIView, ResponseMixin):
     def post(self, request):
         try:
             serializer = self.serializer_class(data=request.data)
-            if serializer.is_valid(raise_exception=True):
+            if serializer.is_valid():
                 name = serializer.validated_data.get('name')
                 obj = District.objects.create(name=name, user=request.user)
                 return self.success_response(
