@@ -9,6 +9,4 @@ CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
     'https://api.meridynpharma.com/',
-    'http://api.meridynpharma.com/'
-    'https://api.meridynpharma.com'
 ]
