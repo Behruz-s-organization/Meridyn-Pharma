@@ -22,8 +22,8 @@ class PharmacySerializer(serializers.ModelSerializer):
 
     def get_district(self, obj):
         return {
-            'id': obj.distrcit.id,
-            'name': obj.distrcit.name,
+            'id': obj.district.id,
+            'name': obj.district.name,
         }
     
     def get_place(self, obj):
@@ -42,7 +42,7 @@ class PharmacyCreateSerializer(serializers.Serializer):
     place_id = serializers.IntegerField()
     longitude = serializers.FloatField()
     latitude = serializers.FloatField()
-    extra_location = serializers.FloatField()
+    extra_location = serializers.JSONField()
 
     def validate(self, data):
         district = District.objects.filter(id=data['district_id']).first()
@@ -52,7 +52,7 @@ class PharmacyCreateSerializer(serializers.Serializer):
         if not place:
             raise serializers.ValidationError({'place_id': "Place topilmadi"})
         
-        data['distirct'] = district
+        data['district'] = district
         data['place'] = place
         return data
     
@@ -62,10 +62,11 @@ class PharmacyCreateSerializer(serializers.Serializer):
                 name=validated_data.get('name'),
                 inn=validated_data.get('inn'),
                 owner_phone=validated_data.get('owner_phone'),
-                responsibele_phone=validated_data.get('responsible_phone'),
+                responsible_phone=validated_data.get('responsible_phone'),
                 district=validated_data.get('district'),
                 place=validated_data.get('place'),
                 longitude=validated_data.get('longitude'),
                 latitude=validated_data.get('latitude'),
                 extra_location=validated_data.get('extra_location'),
+                user=self.context.get('user'),
             )
