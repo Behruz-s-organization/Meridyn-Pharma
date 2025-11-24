@@ -10,6 +10,7 @@ class Plan(BaseModel):
     title = models.CharField(max_length=200)
     description = models.TextField()
     date = models.DateField()
+    is_done = models.BooleanField(default=False)
     # relations
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='plans')
 
