@@ -114,4 +114,4 @@ SECURE_PROXY_SSL_HEADER = (
     env.str("SWAGGER_PROTOCOL", "https"),
 )
 
-import config.conf
+from config.conf import *
