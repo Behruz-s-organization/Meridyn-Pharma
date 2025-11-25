@@ -5,3 +5,5 @@ from .place import *
 from .doctor import *
 from .pharmacy import *
 from .plan import *
+from .location import *
+from .tour_plan import *

@@ -56,3 +56,8 @@ class OrderListSerializer(serializers.ModelSerializer):
             'id', 'pharmacy', 'total_price', 'paid_price', 'advance', 'employee_name',
             'order_items'
         ]
+
+
+class OrderUpdateSerializer(serializers.Serializer):
+    paid_price = serializers.IntegerField()
+    

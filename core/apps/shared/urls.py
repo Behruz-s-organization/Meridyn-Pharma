@@ -12,6 +12,11 @@ from core.apps.shared.views import doctor as dc_view
 from core.apps.shared.views import pharmacy as ph_view
 # shared plan view
 from core.apps.shared.views import plan as plan_view
+# shared location view
+from core.apps.shared.views import location as location_view
+# shared tour plan view
+from core.apps.shared.views import tour_plan as tp_view
+
 
 urlpatterns = [
     # region
@@ -55,5 +60,17 @@ urlpatterns = [
             path('', plan_view.PlanApiView.as_view(), name='plan-create-list-api'),
             path('<int:id>/complite/', plan_view.ComplitePlanApiView.as_view(), name='complite-plan-api'),
         ]
+   )),
+    path('location/', include(
+        [
+            path('list/', location_view.LocationListApiView.as_view(), name='location-list-api'),
+            path('create/', location_view.LocationCreateApiView.as_view(), name='create-location-api'),
+            path('send/', location_view.UserLocationApiView.as_view(), name='send-user-location-api'),
+        ]
     )),
-]   
+    path('tour_plan/', include(
+        [
+            path('list/', tp_view.TourPlanListApiView.as_view(), name='tour-plan-list-api'),
+        ]
+    ))
+]
