@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'core.apps.shared',
     'core.apps.authentication',
     'core.apps.accounts',
+    'core.apps.orders',
 ]
 
 MIDDLEWARE = [

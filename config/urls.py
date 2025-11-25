@@ -39,6 +39,7 @@ urlpatterns += [
          path('accounts/', include('core.apps.accounts.urls')),
          path('authentication/', include('core.apps.authentication.urls')),
          path('shared/', include('core.apps.shared.urls')),     
+         path('orders/', include('core.apps.orders.urls')),
       ],
    )),
 ]
