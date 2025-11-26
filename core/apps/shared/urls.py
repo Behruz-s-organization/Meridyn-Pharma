@@ -59,6 +59,8 @@ urlpatterns = [
         [
             path('', plan_view.PlanApiView.as_view(), name='plan-create-list-api'),
             path('<int:id>/complite/', plan_view.ComplitePlanApiView.as_view(), name='complite-plan-api'),
+            path('<int:id>/delete/', plan_view.PlanDeleteApiView.as_view(), name='plan-delete-api'),
+            path('<int:id>/update/', plan_view.PlanUpdateApiView.as_view(), name='plan-update-api'),
         ]
    )),
     path('location/', include(

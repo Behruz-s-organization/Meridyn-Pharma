@@ -23,3 +23,19 @@ class PlanSerializer(serializers.ModelSerializer):
                 date=validated_data.get('date'),
                 user=self.context.get('user'),
             )
+        
+
+class PlanUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Plan
+        fields = [
+            'title', 'description', 'date', 'is_done',
+        ]
+
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.description = validated_data.get('description', instance.description)
+        instance.date = validated_data.get('date', instance.date)
+        instance.is_done = validated_data.get('is_done')
+        instance.save()
+        return instance
