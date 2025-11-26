@@ -29,7 +29,7 @@ class RegisterUserApiView(generics.GenericAPIView, ResponseMixin):
     def post(self, request):
         try:
             serializer = self.serializer_class(data=request.data)
-            if serializer.is_valid(raise_exception=True):
+            if serializer.is_valid():
                 serializer.save()
                 return self.success_response(message='Foydalanuvchi qoshildi', status_code=201)
             return self.failure_response(data=serializer.errors, message='Foydalanuvchi qoshilmadi')
