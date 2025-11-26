@@ -31,7 +31,7 @@ class UserListSerializer(serializers.ModelSerializer):
         }
     
 
-class UserCreateSerializer(serializers.Serializer):
+class UserAdminCreateSerializer(serializers.Serializer):
     first_name = serializers.CharField()
     last_name = serializers.CharField()
     region_id = serializers.IntegerField()
