@@ -22,32 +22,30 @@ class LoginApiView(generics.GenericAPIView, ResponseMixin):
     serializer_class = LoginSerializer
     queryset = User.objects.all()
 
-    # @swagger_auto_schema(
-    #     operation_summary="Login",
-    #     responses={
-    #         200: openapi.Response(
-    #             description="Success",
-    #             schema=openapi.Schema(  
-    #                 type=openapi.TYPE_OBJECT
-    #             ),
-    #             examples={
-    #                 "application/json": {
-    #                     "status_code": 200,
-    #                     "status": "success",
-    #                     "message": "User topildi",
-    #                     "data": {
-    #                         "id": 1,
-    #                         "first_name": "Behruz",
-    #                         "last_name": "Xoliqberdiyev",
-    #                         "region": "nbve",
-    #                         "is_active": True,
-    #                         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-    #                     }
-    #                 }
-    #             }
-    #         )
-    #     }
-    # )
+    @swagger_auto_schema(
+        operation_summary="Login",
+        responses={
+            200: openapi.Response(
+                description="Success",
+                schema=None,
+                examples={
+                    "application/json": {
+                        "status_code": 200,
+                        "status": "success",
+                        "message": "User topildi",
+                        "data": {
+                            "id": 1,
+                            "first_name": "Behruz",
+                            "last_name": "Xoliqberdiyev",
+                            "region": "nbve",
+                            "is_active": True,
+                            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                        }
+                    }
+                }
+            )
+        }
+    )
     def post(self, request):
         try:
             serializer = self.serializer_class(data=request.data)

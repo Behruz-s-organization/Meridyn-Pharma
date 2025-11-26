@@ -1,0 +1,3 @@
+SWAGGER_SETTINGS = {
+    'DEFAULT_MODEL_RENDERING': 'example'
+}
