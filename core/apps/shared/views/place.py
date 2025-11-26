@@ -6,6 +6,7 @@ from rest_framework import generics, permissions
 
 # drf yasg
 from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 # shared
 from core.apps.shared.models import Place
@@ -23,6 +24,15 @@ class PlaceListApiView(generics.GenericAPIView, ResponseMixin):
     permission_classes = [permissions.IsAuthenticated]
 
     @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                name="district_id",
+                in_=openapi.IN_QUERY,
+                description="Tuman boyicha filterlash",
+                type=openapi.TYPE_INTEGER,
+                required=False
+            )
+        ],
         responses={
             200: base_serializer.SuccessResponseSerializer(),
             400: base_serializer.BaseResponseSerializer(),
@@ -32,10 +42,12 @@ class PlaceListApiView(generics.GenericAPIView, ResponseMixin):
     def get(self, request):
         try:
             search = request.query_params.get('search')
-
+            district_id = request.query_params.get('district_id')
             query = self.queryset.filter(user=request.user)
             if search:
                 query = query.filter(name__istartswith=search)
+            if district_id:
+                query = query.filter(district__id=district_id)
 
             page = self.paginate_queryset(query)
             if page is not None:
