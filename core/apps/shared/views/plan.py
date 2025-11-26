@@ -66,6 +66,9 @@ class ComplitePlanApiView(generics.GenericAPIView, ResponseMixin):
     queryset = Plan.objects.all()
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_serializer_class(self):
+        return super().get_serializer_class()
+
     @swagger_auto_schema(
         responses={
             200: SuccessResponseSerializer(),
