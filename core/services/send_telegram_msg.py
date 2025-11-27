@@ -5,28 +5,29 @@ import requests
 
 # django
 from django.conf import settings
+from django.shortcuts import get_object_or_404
+
+# orders
+from core.apps.orders.models import Order
 
 
-def send_to_telegram(chat_id, file_path=None):
+def send_to_telegram(chat_id, order_id):
     bot_token = settings.BOT_TOKEN
 
     try:
-        url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-        data = {
-            "chat_id": chat_id,
-            "text": "Buyurtma uchun yuklangan PDF file",
-            "parse_mode": "HTML"
-        }
+        order = get_object_or_404(Order, id=order_id)
 
-        if file_path and os.path.exists(file_path):
+        if order.file:
             url = f"https://api.telegram.org/bot{bot_token}/sendDocument"
-            with open(file_path, 'rb') as f:
-                files = {'document': f}
+
+            with open(order.file.path, "rb") as pdf:
+                files = {'document': pdf}
                 data = {'chat_id': chat_id}
-                requests.post(url, files=files, data=data)
-            
-        return True
+
+                response = requests.post(url, data=data, files=files)
+
+            return True
+
     except Exception as e:
         print(f"Telegram xatolik: {e}")
         return False
-

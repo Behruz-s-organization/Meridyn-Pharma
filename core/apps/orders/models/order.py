@@ -17,6 +17,8 @@ class Order(BaseModel):
     advance = models.FloatField()
     employee_name = models.CharField(max_length=200)
 
+    file = models.FileField(null=True, blank=True, upload_to='orders/files/')
+
     def __str__(self):
         return f'#{self.id} from {self.user.first_name}, total_price - {self.total_price}, paid - {self.paid_price}'
     

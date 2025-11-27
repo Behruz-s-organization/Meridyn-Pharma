@@ -13,7 +13,8 @@ from reportlab.lib.units import cm
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.enums import TA_CENTER
 
-from core.apps.orders.models import Order
+# orders
+from core.apps.orders.models import Order, OrderItem
 
 
 def generate_order_pdf(order_id):
@@ -53,7 +54,7 @@ def generate_order_pdf(order_id):
         spaceAfter=6
     )
     
-    title = Paragraph(f"BUYURTMA CHIPTASI", title_style)
+    title = Paragraph(f"Spesifikatsiya", title_style)
     elements.append(title)
     elements.append(Spacer(1, 0.3*cm))
     
@@ -61,6 +62,7 @@ def generate_order_pdf(order_id):
         ['Buyurtma ID:', f"#{order.id}"],
         ['Sana:', order.created_at.strftime('%d.%m.%Y %H:%M') if order.created_at else 'N/A'],
         ['Fabrika:', order.factory.name if order.factory else 'Belgilanmagan'],
+        ['Xodim:', order.employee_name or 'Belgilanmagan'],
     ]
     
     info_table = Table(info_data, colWidths=[3*cm, 12*cm])
@@ -74,29 +76,11 @@ def generate_order_pdf(order_id):
     elements.append(info_table)
     elements.append(Spacer(1, 0.5*cm))
     
-    elements.append(Paragraph("XARIDOR MA'LUMOTLARI", heading_style))
-    customer_data = [
-        ['Ismi:', order.user.first_name + ' ' + order.user.last_name if order.user else 'N/A'],
-        ['Email:', order.user.email if order.user else 'N/A'],
-        ['Telefon:', order.user.phone if hasattr(order.user, 'phone') else 'N/A'],
-        ['Xodim:', order.employee_name or 'Belgilanmagan'],
-    ]
-    
-    customer_table = Table(customer_data, colWidths=[3*cm, 12*cm])
-    customer_table.setStyle(TableStyle([
-        ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 9),
-        ('TEXTCOLOR', (0, 0), (0, -1), colors.HexColor('#333333')),
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-    ]))
-    elements.append(customer_table)
     elements.append(Spacer(1, 0.5*cm))
     
-    elements.append(Paragraph("MAHSULOTLAR", heading_style))
+    elements.append(Paragraph("MAHSULOTLAR", title_style))
     
-    order_items = order.order_items.all()
-    
+    order_items = OrderItem.objects.filter(order=order)
     if order_items.exists():
         items_data = [
             ['#', 'Mahsulot', 'Miqdor', 'Narxi', 'Jami Narx'],
@@ -139,7 +123,7 @@ def generate_order_pdf(order_id):
     summary_data = [
         ['Umumiy summa:', f"{order.total_price:,.2f} so'm"],
         ['To\'langan:', f"{order.paid_price:,.2f} so'm"],
-        ['Avans:', f"{order.advance:,.2f} so'm"],
+        ['Avans:', f"{order.advance} %"],
         ['Qolgan to\'lov:', f"{order.overdue_price:,.2f} so'm"],
     ]
     

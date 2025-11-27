@@ -1,5 +1,6 @@
 # django 
 from django.db import transaction
+from django.core.files.base import ContentFile
 
 # rest framework
 from rest_framework import serializers
@@ -9,6 +10,9 @@ from core.apps.orders.models import Order, OrderItem
 from core.apps.orders.serializers.order_item import OrderItemSerializer
 # shared
 from core.apps.shared.models import Factory
+# services
+from core.services.generate_pdf import generate_order_pdf
+from core.services.send_telegram_msg import send_to_telegram
 
 
 class OrderCreateSerializer(serializers.Serializer):
@@ -28,22 +32,36 @@ class OrderCreateSerializer(serializers.Serializer):
     
     def create(self, validated_data):
         with transaction.atomic():
+            user = self.context.get('user')
             order = Order.objects.create(
                 factory=validated_data.get('factory'),
                 paid_price=validated_data.get('paid_price'),
                 advance=validated_data.get('advance'),
                 employee_name=validated_data.get('employee_name'),
                 total_price=validated_data.get('total_price'),
+                user=user
             )
             order_items = []
             for order_item in validated_data.get('items'):
-                order_items(OrderItem(
+                order_items.append(OrderItem(
                     product=order_item.get('product'),
                     order=order,
                     quantity=order_item.get('quantity'),
                     total_price=order_item.get('total_price'),
                 ))
             OrderItem.objects.bulk_create(order_items)
+
+            # generate pdf file
+            pdf_buffer = generate_order_pdf(order.id)
+
+            file_name = f"order_{order.id}.pdf"
+            order.file.save(file_name, ContentFile(pdf_buffer.getvalue()), save=False)
+
+            order.save(update_fields=["file"]) 
+
+            # send to telegram 
+            
+            send_to_telegram(user.telegram_id, order.id)
             return order
         
     
@@ -55,7 +73,7 @@ class OrderListSerializer(serializers.ModelSerializer):
         model = Order
         fields = [
             'id', 'factory', 'total_price', 'paid_price', 'advance', 'employee_name',
-            'overdue_price', 'order_items'
+            'overdue_price', 'order_items', 'file'
         ]
 
     def get_factory(self, obj):
