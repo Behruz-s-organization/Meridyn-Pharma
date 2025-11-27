@@ -20,6 +20,7 @@ class DoctorListSerializer(serializers.ModelSerializer):
             'phone_number',
             'work_place',
             'description',
+            'sphere',
             'district',
             'place',
             'longitude',
@@ -52,6 +53,7 @@ class DoctorCreateUpdateSerializer(serializers.Serializer):
     longitude = serializers.FloatField(required=False)
     latitude = serializers.FloatField(required=False)
     extra_location = serializers.JSONField(required=False)
+    sphere = serializers.CharField()
 
     def validate(self, data):
         if data.get('district'):
@@ -80,6 +82,7 @@ class DoctorCreateUpdateSerializer(serializers.Serializer):
                 latitude=validated_data.get('latitude'),
                 extra_location=validated_data.get('extra_location'),   
                 user=self.context.get('user'),
+                sphere=validated_data.get('sphere'),
             )
     
     def update(self, instance, validated_data):
@@ -94,5 +97,6 @@ class DoctorCreateUpdateSerializer(serializers.Serializer):
             instance.longitude = validated_data.get('longitude', instance.longitude)
             instance.latitude = validated_data.get('latitude', instance.latitude)
             instance.extra_location = validated_data.get('extra_location', instance.extra_location)
+            instance.sphere = validated_data.get('sphere', instance.sphere)
             instance.save()
             return instance
