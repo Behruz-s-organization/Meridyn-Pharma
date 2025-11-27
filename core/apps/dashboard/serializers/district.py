@@ -24,7 +24,6 @@ class DistrictListSerializer(serializers.ModelSerializer):
             "id": obj.user.id,
             "first_name": obj.user.first_name,
             "last_name": obj.user.last_name,
-            "telegram_id": obj.user.telegram_id,
         }
     
 

@@ -18,6 +18,6 @@ class TourPlan(BaseModel):
         return f"{self.user.first_name}'s tour plan to {self.place_name}"
     
     def save(self, *args, **kwargs):
-        if self.longitude and self.latitude:
+        if self.longitude is not None and self.latitude is not None:
             self.location_send = True
         return super().save(*args, **kwargs)

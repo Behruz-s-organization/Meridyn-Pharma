@@ -3,9 +3,12 @@ from django.urls import path, include
 ### dashboard ###
 # users
 from core.apps.dashboard.views import user as user_views
+# district
+from core.apps.dashboard.views import district as district_views
 
 
 urlpatterns = [
+    # -------------- user -------------- 
     path('user/', include(
         [
             path('list/', user_views.UserListApiView.as_view(), name='user-list-api'),
@@ -14,4 +17,14 @@ urlpatterns = [
             path('<int:id>/update/', user_views.UserUpdateApiView.as_view(), name='user-update-api'),
         ],
     )),
+    # -------------- district --------------
+    path('district/', include(
+        [
+            path('list/', district_views.DistrictListApiView.as_view(), name='district-list-api'),
+            path('create/', district_views.DistrictCreateApiView.as_view(), name='district-create-api'),
+            path('<int:id>/update/', district_views.DistrictUpdateApiView.as_view(), name='district-update-api'),
+            path('<int:id>/delete/', district_views.DistrictDeleteApiView.as_view(), name='district-delete-api'),
+        ]
+    )),
+
 ]
