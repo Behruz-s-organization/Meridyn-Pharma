@@ -8,11 +8,11 @@ from rest_framework import serializers
 from core.apps.orders.models import Order, OrderItem
 from core.apps.orders.serializers.order_item import OrderItemSerializer
 # shared
-from core.apps.shared.models import Pharmacy
+from core.apps.shared.models import Factory
 
 
 class OrderCreateSerializer(serializers.Serializer):
-    pharmacy_id = serializers.IntegerField()
+    factory_id = serializers.IntegerField()
     paid_price = serializers.DecimalField(max_digits=15, decimal_places=2)
     total_price = serializers.DecimalField(max_digits=15, decimal_places=2)
     advance = serializers.FloatField()
@@ -20,16 +20,16 @@ class OrderCreateSerializer(serializers.Serializer):
     items = OrderItemSerializer(many=True)
 
     def validate(self, data):
-        pharmacy = Pharmacy.objects.filter(id=data['pharmacy_id']).first()
-        if not pharmacy:
-            raise serializers.ValidationError({"pharmancy_id": "Pharmancy not found"})
-        data['pharmacy'] = pharmacy
+        factory = Factory.objects.filter(id=data['factory_id']).first()
+        if not factory:
+            raise serializers.ValidationError({"factory_id": "Factory not found"})
+        data['factory'] = factory
         return data
     
     def create(self, validated_data):
         with transaction.atomic():
             order = Order.objects.create(
-                pharmacy=validated_data.get('pharmacy'),
+                factory=validated_data.get('factory'),
                 paid_price=validated_data.get('paid_price'),
                 advance=validated_data.get('advance'),
                 employee_name=validated_data.get('employee_name'),
@@ -49,13 +49,20 @@ class OrderCreateSerializer(serializers.Serializer):
     
 class OrderListSerializer(serializers.ModelSerializer):
     order_items = OrderItemSerializer(many=True)
-    
+    factory = serializers.SerializerMethodField(method_name='get_factory')
+
     class Meta:
         model = Order
         fields = [
-            'id', 'pharmacy', 'total_price', 'paid_price', 'advance', 'employee_name',
-            'order_items'
+            'id', 'factory', 'total_price', 'paid_price', 'advance', 'employee_name',
+            'overdue_price', 'order_items'
         ]
+
+    def get_factory(self, obj):
+        return {
+            'id': obj.factory.id,
+            'name': obj.factory.name,
+        }
 
 
 class OrderUpdateSerializer(serializers.Serializer):
