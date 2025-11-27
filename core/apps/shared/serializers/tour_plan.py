@@ -11,11 +11,5 @@ class TourPlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = TourPlan
         fields = [
-            'id', 'district', 'longitude', 'latitude', 'created_at'
+            'id', 'place_name', 'longitude', 'latitude', 'location_send', 'created_at'
         ]
-
-    def get_district(self, obj):
-        return {
-            'id': obj.district.id,
-            'name': obj.district.name,
-        }
