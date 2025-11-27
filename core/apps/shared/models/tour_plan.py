@@ -15,7 +15,7 @@ class TourPlan(BaseModel):
     location_send = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.user.first_name}'s tour plan to {self.district.name}"
+        return f"{self.user.first_name}'s tour plan to {self.place_name}"
     
     def save(self, *args, **kwargs):
         if self.longitude and self.latitude:

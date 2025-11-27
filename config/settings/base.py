@@ -116,4 +116,6 @@ SECURE_PROXY_SSL_HEADER = (
     env.str("SWAGGER_PROTOCOL", "https"),
 )
 
+BOT_TOKEN = env.str('BOT_TOKEN')
+
 from config.conf import *
