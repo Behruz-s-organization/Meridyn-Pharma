@@ -9,7 +9,7 @@ class TourPlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = TourPlan
         fields = [
-            'id', 'place_name', 'longitude', 'latitude', 'location_send', 'created_at'
+            'id', 'place_name', 'longitude', 'latitude', 'location_send', 'date', 'created_at'
         ]
 
 

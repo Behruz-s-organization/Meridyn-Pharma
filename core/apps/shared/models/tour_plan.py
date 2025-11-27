@@ -13,6 +13,7 @@ class TourPlan(BaseModel):
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
     location_send = models.BooleanField(default=False)
+    date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.first_name}'s tour plan to {self.place_name}"
