@@ -7,3 +7,4 @@ from .pharmacy import *
 from .plan import *
 from .location import *
 from .tour_plan import *
+from .factory import *

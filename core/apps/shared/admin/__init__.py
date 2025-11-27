@@ -6,3 +6,4 @@ from .doctor import *
 from .plan import *
 from .tour_plan import *
 from .location import *
+from .factory import *

@@ -16,6 +16,8 @@ from core.apps.shared.views import plan as plan_view
 from core.apps.shared.views import location as location_view
 # shared tour plan view
 from core.apps.shared.views import tour_plan as tp_view
+# shared factory view
+from core.apps.shared.views import factory as factory_view
 
 
 urlpatterns = [
@@ -74,5 +76,10 @@ urlpatterns = [
         [
             path('list/', tp_view.TourPlanListApiView.as_view(), name='tour-plan-list-api'),
         ]
-    ))
+    )),
+    path('factory/', include(
+        [
+            path('list/', factory_view.FactoryListApiView.as_view(), name='factory-list-api'),
+        ],
+    )),
 ]
