@@ -6,8 +6,6 @@ from core.apps.shared.models import TourPlan
 
 
 class TourPlanSerializer(serializers.ModelSerializer):
-    district = serializers.SerializerMethodField()
-    
     class Meta:
         model = TourPlan
         fields = [
