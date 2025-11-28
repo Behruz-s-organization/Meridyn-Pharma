@@ -142,7 +142,7 @@ class AdminLoginApiView(generics.GenericAPIView, ResponseMixin):
                 username = serializer.validated_data.get('username')
                 password = serializer.validated_data.get('password')
                 user = User.objects.filter(username=username).first()
-                if not user or (user and user.check_password(password)):
+                if not user or (user and not user.check_password(password)):
                     return self.failure_response(message="username yoki parol notog'ri", data={}, status_code=404)
                 if not user.is_active:
                     return self.failure_response(message="foydalanuvchi aktive emas", data={})
