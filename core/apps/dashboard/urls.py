@@ -11,7 +11,8 @@ from core.apps.dashboard.views import user as user_views
 from core.apps.dashboard.views import district as district_views
 # doctor
 from core.apps.dashboard.views.doctor import DoctorViewSet
-
+# region
+from core.apps.dashboard.views import region as region_views
 
 urlpatterns = [
     # -------------- user -------------- 
@@ -32,7 +33,15 @@ urlpatterns = [
             path('<int:id>/delete/', district_views.DistrictDeleteApiView.as_view(), name='district-delete-api'),
         ]
     )),
-
+    # -------------- region --------------
+    path('region/', include(
+        [
+            path('list/', region_views.RegionListApiView.as_view(), name='region-list-api'),
+            path('create/', region_views.RegionCreateApiView.as_view(), name='region-create-api'),
+            path('<int:id>/update/', region_views.RegionUpdateApiView.as_view(), name='region-update-api'),
+            path('<int:id>/delete/', region_views.RegionDeleteApiView.as_view(), name='region-delete-api'),
+        ]
+    )),
 ]
 
 
