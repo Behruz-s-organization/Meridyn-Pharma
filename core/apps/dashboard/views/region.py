@@ -4,6 +4,10 @@ from django.shortcuts import get_object_or_404
 # rest framework
 from rest_framework import generics, permissions, views
 
+# drf yasg
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+
 # shared
 from core.apps.shared.utils.response_mixin import ResponseMixin
 from core.apps.shared.serializers.region import RegionSerializer
@@ -14,9 +18,24 @@ class RegionListApiView(generics.GenericAPIView, ResponseMixin):
     serializer_class = RegionSerializer
     queryset = Region.objects.all()
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_STRING,
+                name='name',
+                description="name boyicha search",
+                required=False,
+            )
+        ]
+    )
     def get(self, request):
         try:
-            serializer = self.serializer_class(self.get_queryset(), many=True)
+            name = request.query_params.get('name')
+            query = self.queryset.all()
+            if name is not None:
+                query = self.queryset.filter(name__istartswith=name)
+            serializer = self.serializer_class(query, many=True)
             return self.success_response(
                 data=serializer.data, message='malumotlar fetch qilindi'
             )
