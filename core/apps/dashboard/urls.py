@@ -22,6 +22,7 @@ urlpatterns = [
             path('create/', user_views.UserCreateApiView.as_view(), name='user-create-api'),
             path('<int:id>/delete/', user_views.UserDeleteApiView.as_view(), name='user-delete-api'),
             path('<int:id>/update/', user_views.UserUpdateApiView.as_view(), name='user-update-api'),
+            path('<int:id>/activate/', user_views.UserActivateApiView.as_view(), name='user-activate-api'),
         ],
     )),
     # -------------- district --------------

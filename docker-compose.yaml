@@ -34,6 +34,7 @@ services:
       - '.:/code'
     depends_on:
       - db
+      - redis
     restart: always
 
   db:
@@ -47,3 +48,8 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
     restart: always
+  
+  redis:
+    image: redis
+    networks:
+      - meridyn_pharma

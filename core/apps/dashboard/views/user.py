@@ -1,3 +1,6 @@
+from asgiref.sync import async_to_sync
+import datetime
+
 # django
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
@@ -9,6 +12,12 @@ from rest_framework.permissions import IsAdminUser
 # drf yasg
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+
+# rest framework simple jwt
+from rest_framework_simplejwt.tokens import RefreshToken
+
+# channels
+from channels.layers import get_channel_layer
 
 # dashboard
 from core.apps.dashboard.serializers import user as serializers
@@ -350,3 +359,88 @@ class UserDeleteApiView(views.APIView, ResponseMixin):
         except Exception as e:
             return self.error_response(data=str(e), message="xatolik")
         
+
+
+class UserActivateApiView(views.APIView, ResponseMixin):
+    permission_classes = [IsAdminUser]
+
+    @swagger_auto_schema(
+        responses={
+            200: openapi.Response(
+                schema=None,
+                description="Success",
+                examples={
+                    "application/json": {
+                        "status_code": 204,
+                        "status": "success",
+                        "message": "user tasdiqlandi",
+                        "data": {
+                            "id": 0,
+                            "first_name": "string",
+                            "last_name": "string",
+                            "region": {
+                                "id": 0,
+                                "name": "string"
+                            },
+                            "is_active": True,
+                            "created_at": "string" 
+                        }
+                    }
+                }
+            ),
+            404: openapi.Response(
+                schema=None,
+                description="Not Found",
+                examples={
+                    "application/json": {
+                        "status_code": 404,
+                        "success": "failure",
+                        "message": "User not found",
+                        "data": {},
+                    }
+                }
+            ),
+            500: openapi.Response(
+                schema=None,
+                description="Server Error",
+                examples={
+                    "application/json": {
+                        "status_code": 500,
+                        "status": "error",
+                        "message": "xatolik",
+                        "data": "string"
+                    }
+                }
+            ),
+        }
+    )
+    def post(self, request, id):
+        try:
+            channel_layer = get_channel_layer()
+            user = User.objects.filter(id=id).first()
+            if not user:
+                return self.failure_response(data={}, message='User not found', status_code=404)
+            user.is_active = True
+            user.save()
+            token = RefreshToken.for_user(user)
+
+            async_to_sync(channel_layer.group_send)(
+                f"user_{user.id}",
+                {
+                    'type': 'user_activated',
+                    'message': 'user aktive qilindi',
+                    'status': "success",
+                    "status_code": 200,
+                    "status_message": "user_activated",
+                    "token": str(token.access_token),
+                }
+            )
+            return self.success_response(
+                data=serializers.UserListSerializer(user).data,
+                message="user tasdiqlandi",
+            )
+        except Exception as e:
+            return self.error_response(
+                data=str(e),
+                message='xatolik'
+            )
