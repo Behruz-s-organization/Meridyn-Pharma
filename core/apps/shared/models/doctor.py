@@ -21,7 +21,7 @@ class Doctor(BaseModel):
     # location
     longitude = models.FloatField(default=0.00)
     latitude = models.FloatField(default=0.00)
-    extra_location = models.JSONField()
+    extra_location = models.JSONField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.work_place}"

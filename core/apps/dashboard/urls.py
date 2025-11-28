@@ -1,10 +1,16 @@
+# django
 from django.urls import path, include
+
+# rest framework
+from rest_framework.routers import DefaultRouter
 
 ### dashboard ###
 # users
 from core.apps.dashboard.views import user as user_views
 # district
 from core.apps.dashboard.views import district as district_views
+# doctor
+from core.apps.dashboard.views.doctor import DoctorViewSet
 
 
 urlpatterns = [
@@ -28,3 +34,10 @@ urlpatterns = [
     )),
 
 ]
+
+
+### ViewSets ###
+router = DefaultRouter()
+router.register("doctor", DoctorViewSet)
+
+urlpatterns += router.urls
