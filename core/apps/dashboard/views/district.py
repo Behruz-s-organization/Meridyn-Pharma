@@ -24,6 +24,15 @@ class DistrictListApiView(generics.GenericAPIView, ResponseMixin):
 
     @swagger_auto_schema(
         tags=["Admin Districts"],
+        manual_parameters=[
+            openapi.Parameter(
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_STRING,
+                name='name',
+                description="tuman nomi bo'yicha qidiruv",
+                required=False,
+            )  
+        ],
         responses={
             200: openapi.Response(
                 description="Success",
@@ -86,7 +95,11 @@ class DistrictListApiView(generics.GenericAPIView, ResponseMixin):
     )
     def get(self, request):
         try:
+            name = request.query_params.get('name', None)
             query = self.queryset.all()
+
+            if not name is None:
+                query = query.filter(name__istartswith=name)
 
             page = self.paginate_queryset(queryset=query)
             if page is not None:
