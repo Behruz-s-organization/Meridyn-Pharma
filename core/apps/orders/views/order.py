@@ -80,7 +80,7 @@ class OrderUpdateApiView(generics.GenericAPIView, ResponseMixin):
                 obj.paid_price = paid_price
                 obj.save()
                 return self.success_response(
-                    data=OrderListApiView(obj).data,
+                    data=OrderListSerializer(obj).data,
                     message='malumot tahrirlandi'
                 )
             return self.failure_response(
