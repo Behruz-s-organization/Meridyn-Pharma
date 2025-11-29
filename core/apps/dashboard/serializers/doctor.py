@@ -5,7 +5,7 @@ from django.db import transaction
 from rest_framework import serializers
 
 # shared
-from core.apps.shared.models import Doctor
+from core.apps.shared.models import Doctor, District, Place
 # accounts
 from core.apps.accounts.models import User
 
@@ -70,11 +70,11 @@ class DoctorCreateSerializer(serializers.Serializer):
     extra_location = serializers.JSONField()
 
     def validate(self, data):
-        district = ...
+        district = District.objects.filter(id=data['district_id']).first()
         if not district:
             raise serializers.ValidationError({"district_id": "Tuman topilmadi"})
         
-        place = ...
+        place = Place.objects.filter(id=data['place_id']).first()
         if not place:
             raise serializers.ValidationError({'place_id': "Obyekt topilmadi"})
         

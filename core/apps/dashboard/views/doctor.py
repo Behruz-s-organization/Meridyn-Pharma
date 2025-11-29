@@ -23,9 +23,9 @@ class DoctorViewSet(viewsets.GenericViewSet, ResponseMixin):
     queryset = Doctor.objects.all()
 
     def get_serializer_class(self):
-        if self.action == "POST": 
+        if self.action == "post": 
             return serializers.DoctorCreateSerializer
-        elif self.action in ("PATCH", "PUT"):
+        elif self.action in ("patch", "put"):
             return serializers.DoctorUpdateSerializer
         else:
             return serializers.DoctorListSerializer
@@ -195,3 +195,83 @@ class DoctorViewSet(viewsets.GenericViewSet, ResponseMixin):
                 data=str(e),
                 message="xatolik"
             )
+
+    @swagger_auto_schema(
+        tags=['Admin Doctors']
+    )
+    @action(detail=False, methods=['post'], url_path='create')
+    def post(self, request):
+        try:
+            serializer = self.get_serializer(data=request.data)
+            if serializer.is_valid():
+                obj = serializer.save()
+                return self.success_response(
+                    data=serializers.DoctorListSerializer(obj).data,
+                    message='malumot qoshildi'
+                )
+            return self.failure_response(
+                data=serializer.errors,
+                message='malumot qoshilmadi'
+            )
+        except Exception as e:
+            return self.error_response(
+                data=str(e),
+                message="xatolik"
+            )
+    
+    @swagger_auto_schema(
+        tags=['Admin Doctors']
+    )
+    @action(detail=True, methods=['patch'], url_path='update')
+    def update_doctor(self, request, pk=None):
+        try:
+            doctor = Doctor.objects.filter(id=pk).first()
+            if not doctor:
+                return self.failure_response(
+                    data={},
+                    message="doctor topilmadi",
+                    status_code=404
+                )
+            serializer = self.get_serializer(data=request.data, instance=doctor)
+            if serializer.is_valid():
+                obj = serializer.save()
+                return self.success_response(
+                    data=serializers.DoctorListSerializer(obj).data,
+                    message='malumot tahrirlandi'
+                )
+            return self.failure_response(
+                data=serializer.errors,
+                message='malumot tahrirlandi'
+            )
+        except Exception as e:
+            return self.error_response(
+                data=str(e),
+                message="xatolik"
+            )
+    
+    @swagger_auto_schema(
+        tags=['Admin Doctors']
+    )
+    @action(detail=True, methods=['delete'], url_path='delete')
+    def delete(self, request, pk=None):
+        try:
+            doctor = Doctor.objects.filter(id=pk).first()
+            if not doctor:
+                return self.failure_response(
+                    data={},
+                    message="doctor topilmadi",
+                    status_code=404
+                )
+            doctor.delete()
+            return self.success_response(
+                data={},
+                message='malumot ochirildi',
+                status_code=204
+            )
+        except Exception as e:
+            return self.error_response(
+                data=str(e),
+                message="xatolik"
+            )
+    
+    
