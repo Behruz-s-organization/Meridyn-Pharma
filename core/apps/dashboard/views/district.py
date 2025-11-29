@@ -31,6 +31,13 @@ class DistrictListApiView(generics.GenericAPIView, ResponseMixin):
                 name='name',
                 description="tuman nomi bo'yicha qidiruv",
                 required=False,
+            ),
+            openapi.Parameter(
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_INTEGER,
+                name='user',
+                description="user id bo'yicha filter",
+                required=False,
             )  
         ],
         responses={
@@ -96,11 +103,13 @@ class DistrictListApiView(generics.GenericAPIView, ResponseMixin):
     def get(self, request):
         try:
             name = request.query_params.get('name', None)
+            user_id = request.query_params.get('user', None)
             query = self.queryset.all()
 
             if not name is None:
                 query = query.filter(name__istartswith=name)
-
+            if not user_id is None:
+                query = query.filter(user__id=user_id)
             page = self.paginate_queryset(queryset=query)
             if page is not None:
                 serializer = self.serializer_class(page, many=True)
