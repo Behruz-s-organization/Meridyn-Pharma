@@ -62,7 +62,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'first_name', 'last_name', 'region', 'is_active',
+            'first_name', 'last_name', 'region', 'is_active', 'telegram_id'
         ]
     
     def update(self, instance, validated_data):
@@ -70,5 +70,6 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.region = validated_data.get('region', instance.region)
         instance.is_active = validated_data.get('is_active', instance.is_active)
+        instance.telegram_id = validated_data.get('telegram_id', instance.telegram_id)
         instance.save()
         return instance
