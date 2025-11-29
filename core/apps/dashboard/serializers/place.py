@@ -41,7 +41,7 @@ class PlaceListSerializer(serializers.ModelSerializer):
         }
     
 
-class PlaceCreateSerializer(serializers.Serializer):
+class AdminPlaceCreateSerializer(serializers.Serializer):
     district_id = serializers.IntegerField()
     user_id = serializers.IntegerField()
 
@@ -61,7 +61,7 @@ class PlaceCreateSerializer(serializers.Serializer):
         
         data['user'] = user
         data['district'] = district
-        return
+        return data
     
     def create(self, validated_data):
         with transaction.atomic():
