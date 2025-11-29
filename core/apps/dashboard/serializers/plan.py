@@ -62,6 +62,9 @@ class PlanUpdateSerializer(serializers.ModelSerializer):
             'date',
             'user',
         ]
+    extra_kwargs = {
+        "user": {"required": False}
+    }
     
     def update(self, instance, validated_data):
         with transaction.atomic():
