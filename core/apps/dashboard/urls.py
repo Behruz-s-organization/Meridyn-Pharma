@@ -17,6 +17,8 @@ from core.apps.dashboard.views import region as region_views
 from core.apps.dashboard.views.plan import PlanViewSet
 # place
 from core.apps.dashboard.views.place import PlaceViewSet
+# pharmacy
+from core.apps.dashboard.views.pharmacy import PharmacyViewSet
 
 urlpatterns = [
     # -------------- user -------------- 
@@ -55,5 +57,6 @@ router = DefaultRouter()
 router.register("doctor", DoctorViewSet)
 router.register("plan", PlanViewSet)
 router.register("place", PlaceViewSet)
+router.register("pharmacy", PharmacyViewSet)
 
 urlpatterns += router.urls
