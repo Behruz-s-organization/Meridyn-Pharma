@@ -21,6 +21,7 @@ class UserListSerializer(serializers.ModelSerializer):
             'last_name',
             'region',
             'is_active',
+            'telegram_id',
             'created_at'
         ]
     
@@ -36,6 +37,7 @@ class UserAdminCreateSerializer(serializers.Serializer):
     last_name = serializers.CharField()
     region_id = serializers.IntegerField()
     is_active = serializers.BooleanField()
+    telegram_id = serializers.CharField()
 
     def validate(self, data):
         region = Region.objects.filter(id=data['region_id']).first()
@@ -52,6 +54,7 @@ class UserAdminCreateSerializer(serializers.Serializer):
                 last_name=validated_data.get('last_name'),
                 region=validated_data.get('region'),
                 is_active=validated_data.get('is_active'),
+                telegram_id=validated_data.get('telegram_id'),
             )
         
 
