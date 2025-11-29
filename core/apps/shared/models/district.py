@@ -7,7 +7,7 @@ from core.apps.accounts.models import User
 
 
 class District(BaseModel):
-    name = models.CharField(max_length=200, unique=True)
+    name = models.CharField(max_length=200)
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='districts', null=True
     )
