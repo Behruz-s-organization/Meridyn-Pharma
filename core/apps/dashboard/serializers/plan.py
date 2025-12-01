@@ -21,6 +21,7 @@ class PlanListSerializer(serializers.ModelSerializer):
             'description',
             'date',
             'user',
+            'is_done',
             'created_at'
         ]
     
