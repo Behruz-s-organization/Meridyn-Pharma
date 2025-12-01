@@ -27,7 +27,7 @@ class PlanListSerializer(serializers.ModelSerializer):
     def get_user(self, obj):
         return {
             'id': obj.user.id,
-            'first_name': obj.user_first_name,
+            'first_name': obj.user.first_name,
             'last_name': obj.user.last_name,
         }
 

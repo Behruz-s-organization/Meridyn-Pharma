@@ -8,7 +8,7 @@ from rest_framework import generics, permissions
 from drf_yasg.utils import swagger_auto_schema
 
 # orders
-from core.apps.orders.models import Order, OrderItem
+from core.apps.orders.models import Order, Payment
 from core.apps.orders.serializers.order import OrderCreateSerializer, OrderListSerializer, OrderUpdateSerializer
 # shared
 from core.apps.shared.utils.response_mixin import ResponseMixin
@@ -78,6 +78,10 @@ class OrderUpdateApiView(generics.GenericAPIView, ResponseMixin):
             if serializer.is_valid():
                 paid_price = serializer.validated_data.get('paid_price')
                 obj.paid_price = paid_price
+                Payment.objects.create(
+                    order=obj,
+                    price=paid_price
+                )
                 obj.save()
                 return self.success_response(
                     data=OrderListSerializer(obj).data,
