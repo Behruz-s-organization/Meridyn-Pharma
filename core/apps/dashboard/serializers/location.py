@@ -42,6 +42,8 @@ class LocationListSerializer(serializers.ModelSerializer):
         return {
             'id': obj.place.id,
             'name': obj.place.name,
+            'longitude': obj.place.longitude,
+            'latitude': obj.place.latitude,
         } if obj.place else None
     
     def get_doctor(self, obj):
@@ -49,12 +51,16 @@ class LocationListSerializer(serializers.ModelSerializer):
             'id': obj.doctor.id,
             'first_name': obj.doctor.first_name,
             'last_name': obj.doctor.last_name,
+            'longitude': obj.doctor.longitude,
+            'latitude': obj.doctor.latitude,
         } if obj.doctor else None
 
     def get_pharmacy(self, obj):
         return {
             'id': obj.pharmacy.id,
             'name': obj.pharmacy.name,
+            'longitude': obj.pharmacy.longitude,
+            'latitude': obj.pharmacy.latitude,
         } if obj.pharmacy else None
     
 
