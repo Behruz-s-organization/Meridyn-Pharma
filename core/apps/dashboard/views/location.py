@@ -1,13 +1,13 @@
 # django
 from django.db.models import Q
 
-# rest framework
-from rest_framework import viewsets, permissions
-from rest_framework.decorators import action
-
 # drf yasg
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+
+# rest framework
+from rest_framework import permissions, viewsets
+from rest_framework.decorators import action
 
 # dashboard
 from core.apps.dashboard.serializers import location as serializers
@@ -25,7 +25,7 @@ class LocationViewSet(viewsets.GenericViewSet, ResponseMixin):
         return serializers.LocationListSerializer
 
     @swagger_auto_schema(
-        tags=['Admin Location'],
+        tags=["Admin Location"],
         manual_parameters=[
             openapi.Parameter(
                 in_=openapi.IN_QUERY,
@@ -43,23 +43,23 @@ class LocationViewSet(viewsets.GenericViewSet, ResponseMixin):
             ),
         ],
     )
-    @action(detail=False, methods=['get'], url_path="list")
+    @action(detail=False, methods=["get"], url_path="list")
     def get(self, request):
         try:
             # params
-            date = request.query_params.get('date', None)
-            user_full_name = request.query_params.get('user', None)
+            date = request.query_params.get("date", None)
+            user_full_name = request.query_params.get("user", None)
 
             queryset = self.queryset.all()
 
             # filters
             if date is not None:
-                queryset = queryset.filter(date=date)
-            
+                queryset = queryset.filter(created_at__date=date)
+
             if user_full_name is not None:
                 queryset = queryset.filter(
-                    Q(user__first_name__istartswith=user_full_name) |
-                    Q(user__last_name__istartswith=user_full_name) 
+                    Q(user__first_name__istartswith=user_full_name)
+                    | Q(user__last_name__istartswith=user_full_name)
                 )
 
             page = self.paginate_queryset(queryset)
@@ -67,45 +67,31 @@ class LocationViewSet(viewsets.GenericViewSet, ResponseMixin):
                 serializer = self.get_serializer(page, many=True)
                 return self.success_response(
                     data=self.get_paginated_response(serializer.data).data,
-                    message='malumotlar fetch qilindi'
+                    message="malumotlar fetch qilindi",
                 )
             serializer = self.get_serializer(queryset, many=True)
             return self.success_response(
-                data=serializer.data,
-                message='malumotlar fetch qilindi'
+                data=serializer.data, message="malumotlar fetch qilindi"
             )
         except Exception as e:
-            return self.error_response(
-                data=str(e),
-                message="xatolik"
-            )
+            return self.error_response(data=str(e), message="xatolik")
 
-    @swagger_auto_schema(
-        tags=['Admin Location']
-    )
-    @action(detail=True, methods=['delete'], url_path='delete')
+    @swagger_auto_schema(tags=["Admin Location"])
+    @action(detail=True, methods=["delete"], url_path="delete")
     def delete(self, request, pk=None):
         try:
             location = Location.objects.filter(id=pk).first()
             if not location:
                 return self.failure_response(
-                    data={},
-                    message="location topilmadi",
-                    status_code=404
+                    data={}, message="location topilmadi", status_code=404
                 )
             location.delete()
             return self.success_response(
-                data={},
-                message='malumot ochirildi',
-                status_code=204
+                data={}, message="malumot ochirildi", status_code=204
             )
         except Exception as e:
-            return self.error_response(
-                data=str(e),
-                message="xatolik"
-            )
-    
-    
+            return self.error_response(data=str(e), message="xatolik")
+
 
 class UserLocationViewSet(viewsets.GenericViewSet, ResponseMixin):
     permission_classes = [permissions.IsAdminUser]
@@ -115,7 +101,7 @@ class UserLocationViewSet(viewsets.GenericViewSet, ResponseMixin):
         return serializers.UserLocationListSerializer
 
     @swagger_auto_schema(
-        tags=['Admin Location'],
+        tags=["Admin Location"],
         manual_parameters=[
             openapi.Parameter(
                 in_=openapi.IN_QUERY,
@@ -133,23 +119,23 @@ class UserLocationViewSet(viewsets.GenericViewSet, ResponseMixin):
             ),
         ],
     )
-    @action(detail=False, methods=['get'], url_path="list")
+    @action(detail=False, methods=["get"], url_path="list")
     def get(self, request):
         try:
             # params
-            date = request.query_params.get('date', None)
-            user_full_name = request.query_params.get('user', None)
+            date = request.query_params.get("date", None)
+            user_full_name = request.query_params.get("user", None)
 
             queryset = self.queryset.all()
 
             # filters
             if date is not None:
                 queryset = queryset.filter(created_at__date=date)
-            
+
             if user_full_name is not None:
                 queryset = queryset.filter(
-                    Q(user__first_name__istartswith=user_full_name) |
-                    Q(user__last_name__istartswith=user_full_name) 
+                    Q(user__first_name__istartswith=user_full_name)
+                    | Q(user__last_name__istartswith=user_full_name)
                 )
 
             page = self.paginate_queryset(queryset)
@@ -157,42 +143,27 @@ class UserLocationViewSet(viewsets.GenericViewSet, ResponseMixin):
                 serializer = self.get_serializer(page, many=True)
                 return self.success_response(
                     data=self.get_paginated_response(serializer.data).data,
-                    message='malumotlar fetch qilindi'
+                    message="malumotlar fetch qilindi",
                 )
             serializer = self.get_serializer(queryset, many=True)
             return self.success_response(
-                data=serializer.data,
-                message='malumotlar fetch qilindi'
+                data=serializer.data, message="malumotlar fetch qilindi"
             )
         except Exception as e:
-            return self.error_response(
-                data=str(e),
-                message="xatolik"
-            )
+            return self.error_response(data=str(e), message="xatolik")
 
-    @swagger_auto_schema(
-        tags=['Admin Location']
-    )
-    @action(detail=True, methods=['delete'], url_path='delete')
+    @swagger_auto_schema(tags=["Admin Location"])
+    @action(detail=True, methods=["delete"], url_path="delete")
     def delete(self, request, pk=None):
         try:
             location = Location.objects.filter(id=pk).first()
             if not location:
                 return self.failure_response(
-                    data={},
-                    message="location topilmadi",
-                    status_code=404
+                    data={}, message="location topilmadi", status_code=404
                 )
             location.delete()
             return self.success_response(
-                data={},
-                message='malumot ochirildi',
-                status_code=204
+                data={}, message="malumot ochirildi", status_code=204
             )
         except Exception as e:
-            return self.error_response(
-                data=str(e),
-                message="xatolik"
-            )
-    
-    
+            return self.error_response(data=str(e), message="xatolik")
