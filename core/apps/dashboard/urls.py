@@ -21,6 +21,8 @@ from core.apps.dashboard.views.place import PlaceViewSet
 from core.apps.dashboard.views.pharmacy import PharmacyViewSet
 # product
 from core.apps.dashboard.views.product import ProductViewSet
+# factory
+from core.apps.dashboard.views.factory import FactoryViewSet
 
 urlpatterns = [
     # -------------- user -------------- 
@@ -61,5 +63,6 @@ router.register("plan", PlanViewSet)
 router.register("place", PlaceViewSet)
 router.register("pharmacy", PharmacyViewSet)
 router.register("product", ProductViewSet)
+router.register("factory", FactoryViewSet)
 
 urlpatterns += router.urls

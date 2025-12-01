@@ -11,6 +11,8 @@ from core.apps.accounts.models import User
 
 
 class PlanListSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField(method_name='get_user')
+    
     class Meta:
         model = Plan
         fields = [
