@@ -12,5 +12,5 @@ class Payment(BaseModel):
     price = models.DecimalField(max_digits=15, decimal_places=2)
     
     def __str__(self):
-        return self.price
+        return f'{self.price}'
     

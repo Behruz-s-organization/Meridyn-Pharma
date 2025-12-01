@@ -27,6 +27,8 @@ from core.apps.dashboard.views.factory import FactoryViewSet
 from core.apps.dashboard.views.tour_plan import TourPlanViewSet
 # order
 from core.apps.dashboard.views.order import OrderViewSet
+# payment
+from core.apps.dashboard.views.payment import PaymentListApiView
 
 
 urlpatterns = [
@@ -58,6 +60,11 @@ urlpatterns = [
             path('<int:id>/delete/', region_views.RegionDeleteApiView.as_view(), name='region-delete-api'),
         ]
     )),
+    path('payment/', include(
+        [
+            path('list/', PaymentListApiView.as_view(), name='payment-list-api'),
+        ]
+    ))
 ]
 
 
