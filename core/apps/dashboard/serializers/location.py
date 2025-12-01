@@ -14,14 +14,23 @@ class LocationListSerializer(serializers.ModelSerializer):
     place = serializers.SerializerMethodField(method_name='get_place')
     doctor = serializers.SerializerMethodField(method_name='get_doctor')
     pharmacy = serializers.SerializerMethodField(method_name='get_pharmacy')
-    
+    user = serializers.SerializerMethodField(method_name='get_user')
+
     class Meta:
         model = Location
         fields = [
-            'id', 'longitude', 'latitude', 'created_at', 
+            'id', 'longitude', 'latitude', 'created_at', 'user', 
             'district', 'place', 'doctor', 'pharmacy', 'updated_at'
         ]
     
+    def get_user(self, obj):
+        return {
+            'id': obj.user.id,
+            'first_name': obj.user.first_name,
+            'last_name': obj.user.last_name,
+        }
+
+
     def get_district(self, obj):
         return {
             'id': obj.district.id,
