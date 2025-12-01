@@ -29,6 +29,8 @@ from core.apps.dashboard.views.tour_plan import TourPlanViewSet
 from core.apps.dashboard.views.order import OrderViewSet
 # payment
 from core.apps.dashboard.views.payment import PaymentListApiView
+# location
+from core.apps.dashboard.views.location import LocationViewSet, UserLocationViewSet
 
 
 urlpatterns = [
@@ -78,6 +80,8 @@ router.register("product", ProductViewSet)
 router.register("factory", FactoryViewSet)
 router.register("tour_plan", TourPlanViewSet)
 router.register("order", OrderViewSet)
+router.register("location", LocationViewSet)
+router.register("user_location", UserLocationViewSet)
 
 
 urlpatterns += router.urls

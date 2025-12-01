@@ -5,7 +5,7 @@ from django.db import transaction
 from rest_framework import serializers
 
 # shared
-from core.apps.shared.models import Location, UserLocation, District, Place, Doctor, Pharmacy
+from core.apps.shared.models import Location, UserLocation
 
 
 
@@ -19,7 +19,7 @@ class LocationListSerializer(serializers.ModelSerializer):
         model = Location
         fields = [
             'id', 'longitude', 'latitude', 'created_at', 
-            'district', 'place', 'doctor', 'pharmacy',
+            'district', 'place', 'doctor', 'pharmacy', 'updated_at'
         ]
     
     def get_district(self, obj):
@@ -47,3 +47,21 @@ class LocationListSerializer(serializers.ModelSerializer):
             'id': obj.pharmacy.id,
             'name': obj.pharmacy.name,
         } if obj.pharmacy else None
+    
+
+
+class UserLocationListSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField(method_name='get_user') 
+
+    class Meta:
+        model = UserLocation
+        fields = [
+            'id', 'longitude', 'latitude', 'user', 'created_at', 
+        ]
+
+    def get_user(self, obj):
+        return {
+            'id': obj.user.id,
+            'first_name': obj.user.first_name,
+            'last_name': obj.user.last_name
+        }
