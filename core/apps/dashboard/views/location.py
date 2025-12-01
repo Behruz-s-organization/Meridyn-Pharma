@@ -156,7 +156,7 @@ class UserLocationViewSet(viewsets.GenericViewSet, ResponseMixin):
     @action(detail=True, methods=["delete"], url_path="delete")
     def delete(self, request, pk=None):
         try:
-            location = Location.objects.filter(id=pk).first()
+            location = UserLocation.objects.filter(id=pk).first()
             if not location:
                 return self.failure_response(
                     data={}, message="location topilmadi", status_code=404
