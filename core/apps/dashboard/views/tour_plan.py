@@ -26,9 +26,9 @@ class TourPlanViewSet(viewsets.GenericViewSet, ResponseMixin):
             case "post": 
                 return serializers.TourPlanCreateSerializer
             case "update_doctor":
-                return serializers.TourPlanUpdateSerializer
+                return serializers.AdminTourPlanUpdateSerializer
             case _:
-                return serializers.TourPlanListSerializer
+                return serializers.AdminTourPlanListSerializer
 
     @swagger_auto_schema(
         tags=['Admin Tour Plans'],

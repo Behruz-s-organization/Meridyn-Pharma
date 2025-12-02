@@ -10,7 +10,7 @@ from core.apps.shared.models import TourPlan
 from core.apps.accounts.models import User
 
 
-class TourPlanListSerializer(serializers.ModelSerializer):
+class AdminTourPlanListSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
 
     class Meta:
@@ -49,7 +49,7 @@ class TourPlanCreateSerializer(serializers.Serializer):
             )
         
 
-class TourPlanUpdateSerializer(serializers.ModelSerializer):
+class AdminTourPlanUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = TourPlan
         fields = [
