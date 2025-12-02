@@ -22,12 +22,13 @@ class OrderViewSet(viewsets.GenericViewSet, ResponseMixin):
     queryset = Order.objects.all()
 
     def get_serializer_class(self):
-        if self.action == "post": 
-            return serializers.AdminOrderCreateSerializer
-        elif self.action in ("patch", "put"):
-            return serializers.AdminOrderUpdateSerializer
-        else:
-            return serializers.AdminOrderListSerializer
+        match self.action:
+            case "post":
+                return serializers.AdminOrderCreateSerializer
+            case "update_":
+                return serializers.AdminOrderUpdateSerializer
+            case _:
+                return serializers.AdminOrderListSerializer
 
     @swagger_auto_schema(
         tags=['Admin Orders'],
@@ -82,7 +83,7 @@ class OrderViewSet(viewsets.GenericViewSet, ResponseMixin):
         tags=['Admin Orders']
     )
     @action(detail=True, methods=['patch'], url_path='update')
-    def update_doctor(self, request, pk=None):
+    def update_(self, request, pk=None):
         try:
             order = Order.objects.filter(id=pk).first()
             if not order:

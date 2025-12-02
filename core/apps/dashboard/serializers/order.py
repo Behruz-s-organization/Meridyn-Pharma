@@ -7,7 +7,7 @@ from rest_framework import serializers
 
 # orders 
 from core.apps.orders.models import Order, OrderItem
-from core.apps.orders.serializers.order_item import OrderItemSerializer
+from core.apps.orders.serializers.order_item import OrderItemSerializer, OrderUpdateItemSerializer
 # shared
 from core.apps.shared.models import Factory
 # accounts
@@ -104,7 +104,7 @@ class AdminOrderUpdateSerializer(serializers.Serializer):
     advance = serializers.FloatField()
     employee_name = serializers.CharField()
     user_id = serializers.IntegerField()
-    items = OrderItemSerializer(many=True)
+    items = OrderUpdateItemSerializer(many=True)
 
     def validate(self, data):
         user = User.objects.filter(id=data['user_id']).first()
