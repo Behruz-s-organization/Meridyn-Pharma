@@ -31,8 +31,6 @@ class TourPlanListSerializer(serializers.ModelSerializer):
 class TourPlanCreateSerializer(serializers.Serializer):
     place_name = serializers.CharField()
     user_id = serializers.IntegerField()
-    latitude = serializers.FloatField()
-    longitude = serializers.FloatField()
     date = serializers.DateField()
 
     def validate(self, data):
@@ -47,8 +45,6 @@ class TourPlanCreateSerializer(serializers.Serializer):
             return TourPlan.objects.create(
                 place_name=validated_data.get('place_name'),
                 user=validated_data.get('user'),
-                longitude=validated_data.get('longitude'),
-                latitude=validated_data.get('latitude'),
                 date=validated_data.get('date'),
             )
         
@@ -57,16 +53,13 @@ class TourPlanUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = TourPlan
         fields = [
-            'place_name', 'user', 'latitude', 
-            'longitude', 'date'
+            'place_name', 'user', 'date'
         ]
     
     def update(self, instance, validated_data):
         with transaction.atomic():
             instance.place_name = validated_data.get('place_name', instance.place_name)
             instance.user = validated_data.get('user', instance.user)
-            instance.latitude = validated_data.get('latitude', instance.latitude)
-            instance.longitude = validated_data.get('longitude', instance.longitude)
             instance.date = validated_data.get('date', instance.date)
             instance.save()
             return instance

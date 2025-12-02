@@ -22,12 +22,13 @@ class TourPlanViewSet(viewsets.GenericViewSet, ResponseMixin):
     queryset = TourPlan.objects.all()
 
     def get_serializer_class(self):
-        if self.action == "post": 
-            return serializers.TourPlanCreateSerializer
-        elif self.action in ["patch", "put"]:
-            return serializers.TourPlanUpdateSerializer
-        else:
-            return serializers.TourPlanListSerializer
+        match self.action: 
+            case "post": 
+                return serializers.TourPlanCreateSerializer
+            case "update_doctor":
+                return serializers.TourPlanUpdateSerializer
+            case _:
+                return serializers.TourPlanListSerializer
 
     @swagger_auto_schema(
         tags=['Admin Tour Plans'],
