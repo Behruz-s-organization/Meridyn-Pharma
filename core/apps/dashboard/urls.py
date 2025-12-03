@@ -33,6 +33,8 @@ from core.apps.dashboard.views.payment import PaymentListApiView
 from core.apps.dashboard.views.location import LocationViewSet, UserLocationViewSet
 # support
 from core.apps.dashboard.views.support import SupportListApiView
+# distibuted products
+from core.apps.dashboard.views.dis_prod import DistributedProductListApiView
 
 
 urlpatterns = [
@@ -73,6 +75,12 @@ urlpatterns = [
     path('support/', include(
         [
             path('list/', SupportListApiView.as_view(), name='support-list-api'),
+        ]
+    )),
+    # -------------- distributed products --------------
+    path('distributed_product/', include(
+        [
+            path('list/', DistributedProductListApiView.as_view(), name='distributed-product-list-api'),
         ]
     ))
 ]
