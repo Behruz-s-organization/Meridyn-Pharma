@@ -18,6 +18,8 @@ from core.apps.shared.views import location as location_view
 from core.apps.shared.views import tour_plan as tp_view
 # shared factory view
 from core.apps.shared.views import factory as factory_view
+# shared support view
+from core.apps.shared.views import support as support_view
 
 
 urlpatterns = [
@@ -83,4 +85,9 @@ urlpatterns = [
             path('list/', factory_view.FactoryListApiView.as_view(), name='factory-list-api'),
         ],
     )),
+    path('support/', include(
+        [
+            path('send/', support_view.SupportCreateApiView.as_view(), name='support-create-api'),
+        ]
+    ))
 ]
