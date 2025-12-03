@@ -23,7 +23,7 @@ class PlanViewSet(viewsets.GenericViewSet, ResponseMixin):
 
     def get_serializer_class(self):
         if self.action == "post": 
-            return serializers.PlanCreateSerializer
+            return serializers.AdminPlanCreateSerializer
         elif self.action in ("patch", "put"):
             return serializers.PlanUpdateSerializer
         else:

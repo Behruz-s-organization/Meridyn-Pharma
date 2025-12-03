@@ -33,7 +33,7 @@ class PlanListSerializer(serializers.ModelSerializer):
         }
 
 
-class PlanCreateSerializer(serializers.Serializer):
+class AdminPlanCreateSerializer(serializers.Serializer):
     title = serializers.CharField()
     description = serializers.CharField()
     date = serializers.DateField()

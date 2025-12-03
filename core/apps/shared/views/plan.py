@@ -10,15 +10,20 @@ from drf_yasg import openapi
 # shared
 from core.apps.shared.models import Plan
 from core.apps.shared.serializers.base import BaseResponseSerializer, SuccessResponseSerializer
-from core.apps.shared.serializers.plan import PlanSerializer, PlanUpdateSerializer
+from core.apps.shared.serializers.plan import PlanSerializer, PlanUpdateSerializer, PlanCreateSerializer, PlanCompliteSerializer
 from core.apps.shared.utils.response_mixin import ResponseMixin
 
 
 
 class PlanApiView(generics.GenericAPIView, ResponseMixin):
-    serializer_class = PlanSerializer
     queryset = Plan.objects.all()
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return PlanCreateSerializer
+        else:
+            return PlanSerializer
 
     @swagger_auto_schema(
         operation_description="date boyicha filter bor, ?date=date",
@@ -34,7 +39,7 @@ class PlanApiView(generics.GenericAPIView, ResponseMixin):
             queryset = self.queryset.filter(user=request.user)
             if date:
                 queryset = queryset.filter(date=date)
-            serializer = self.serializer_class(queryset, many=True)
+            serializer = self.get_serializer(queryset, many=True)
             return self.success_response(data=serializer.data, message='malumotlar fetch qilindi')
         except Exception as e:
             return self.error_response(data=str(e), message='xatolik')
@@ -48,7 +53,7 @@ class PlanApiView(generics.GenericAPIView, ResponseMixin):
     )   
     def post(self, request):
         try:
-            serializer = self.serializer_class(data=request.data, context={'user': request.user})
+            serializer = self.get_serializer(data=request.data, context={'user': request.user})
             if serializer.is_valid():
                 obj = serializer.save()
                 created_data = PlanSerializer(obj).data
@@ -63,7 +68,7 @@ class PlanApiView(generics.GenericAPIView, ResponseMixin):
     
 
 class ComplitePlanApiView(generics.GenericAPIView, ResponseMixin):
-    serializer_class = None
+    serializer_class = PlanCompliteSerializer
     queryset = Plan.objects.all()
     permission_classes = [permissions.IsAuthenticated]
 
@@ -80,12 +85,21 @@ class ComplitePlanApiView(generics.GenericAPIView, ResponseMixin):
     def post(self, request, id):
         try: 
             obj = get_object_or_404(Plan, id=id, user=request.user)
-            obj.is_done = True
-            obj.save()
-            return self.success_response(
-                data=PlanSerializer(obj).data,
-                message='malumot yangilandi'
-            )
+            serializer = self.serializer_class(data=request.data)
+            if serializer.is_valid():
+                comment = serializer.validated_data.get('comment')
+                obj.is_done = True
+                obj.comment = comment
+                obj.save()
+                return self.success_response(
+                    data=PlanSerializer(obj).data,
+                    message='malumot yangilandi'
+                )
+            else:
+                return self.failure_response(
+                    data=serializer.errors,
+                    message="malumot yangilanmadi"
+                )
         except Exception as e:
             return self.error_response(data=str(e), message='xatolik')
         
