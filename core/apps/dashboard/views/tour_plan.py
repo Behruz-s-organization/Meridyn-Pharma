@@ -107,7 +107,7 @@ class TourPlanViewSet(viewsets.GenericViewSet, ResponseMixin):
             if serializer.is_valid():
                 obj = serializer.save()
                 return self.success_response(
-                    data=serializers.TourPlanListSerializer(obj).data,
+                    data=serializers.AdminTourPlanListSerializer(obj).data,
                     message='malumot qoshildi'
                 )
             return self.failure_response(
@@ -137,7 +137,7 @@ class TourPlanViewSet(viewsets.GenericViewSet, ResponseMixin):
             if serializer.is_valid():
                 obj = serializer.save()
                 return self.success_response(
-                    data=serializers.TourPlanListSerializer(obj).data,
+                    data=serializers.AdminTourPlanListSerializer(obj).data,
                     message='malumot tahrirlandi'
                 )
             return self.failure_response(
