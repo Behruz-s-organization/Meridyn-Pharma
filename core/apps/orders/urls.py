@@ -4,6 +4,8 @@ from django.urls import path, include
 from core.apps.orders.views import product as product_view
 # orders order views
 from core.apps.orders.views import order as order_view
+# orders distributed product
+from core.apps.orders.views import distributed_product as dp_view
 
 
 urlpatterns = [
@@ -20,4 +22,10 @@ urlpatterns = [
         ]
     )),
 
+
+    path('distributed_product/', include(
+        [
+            path('create/', dp_view.DistributedProductCreateApiView.as_view(), name='distributed-product-create-api'),
+        ]
+    )),
 ]
