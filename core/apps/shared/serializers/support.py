@@ -31,3 +31,21 @@ class SupportCreateSerializer(serializers.Serializer):
                 type=validated_data.get('type'),
                 problem=validated_data.get('problem'    )
             )
+
+
+class SupportListSerializer(serializers.ModelSerializer):
+    district = serializers.SerializerMethodField(method_name='get_district')
+    
+    class Meta:
+        model = Support
+        fields = [
+            'id', 'problem', 'date', 'type', 'district', 'created_at'
+        ]
+        ref_name = "SupportListSerializerForUser"
+
+    def get_district(self, obj):
+        return {
+            'id': obj.district.id,
+            'name': obj.district.name,
+        } if obj.district else None
+    

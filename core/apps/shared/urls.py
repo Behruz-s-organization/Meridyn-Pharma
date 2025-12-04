@@ -88,6 +88,7 @@ urlpatterns = [
     path('support/', include(
         [
             path('send/', support_view.SupportCreateApiView.as_view(), name='support-create-api'),
+            path('list/', support_view.SupportListApiView.as_view(), name='support-list-api'),
         ]
     ))
 ]

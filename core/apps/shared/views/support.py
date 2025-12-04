@@ -8,7 +8,7 @@ from drf_yasg.utils import swagger_auto_schema
 # shared
 from core.apps.shared.models import Support
 from core.apps.shared.utils.response_mixin import ResponseMixin
-from core.apps.shared.serializers.support import SupportCreateSerializer
+from core.apps.shared.serializers.support import SupportCreateSerializer, SupportListSerializer
 
 
 class SupportCreateApiView(generics.GenericAPIView, ResponseMixin):
@@ -34,4 +34,72 @@ class SupportCreateApiView(generics.GenericAPIView, ResponseMixin):
             return self.error_response(
                 data=str(e),
                 message='xatolik, backend dastruchiga murojaat qiling iltimos'
+            )
+
+
+class SupportListApiView(generics.GenericAPIView, ResponseMixin):
+    serializer_class = SupportListSerializer
+    queryset = Support.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                in_=openapi.IN_QUERY,
+                name="problem",
+                description="problem text bo'yicha filter",
+                required=False,
+                type=openapi.TYPE_STRING,
+            ),
+            openapi.Parameter(
+                in_=openapi.IN_QUERY,
+                name="district",
+                description="tuman name bo'yicha filter",
+                required=False,
+                type=openapi.TYPE_STRING,
+            ),
+            openapi.Parameter(
+                in_=openapi.IN_QUERY,
+                name="date",
+                description="date bo'yicha qidirish",
+                required=False,
+                type=openapi.FORMAT_DATE,
+            ),
+        ],
+    )
+    def get(self, request):
+        try:
+            problem = request.query_params.get('problem', None)
+            district_name = request.query_params.get('district', None)
+            date = request.query_params.get('date', None)
+            
+            queryset = self.queryset.filter(user=request.user)
+
+            # filters
+            if problem is not None:
+                queryset = queryset.filter(problem__istartswith=problem)
+            
+            if district_name is not None:
+                queryset = queryset.filter(district__name__istartswith=district_name)
+
+            if date is not None:
+                queryset = queryset.filter(date=date)
+
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = self.serializer_class(page, many=True)
+                return self.success_response(
+                    data=self.get_paginated_response(serializer.data).data,
+                    message="Malumotlar fetch qilindi",
+                )
+            serializer = self.serializer_class(queryset, many=True)
+            return self.success_response(
+                data=serializer.data,
+                message='Malumotlar fetch qilindi'
+            )
+
+        except Exception as e:
+            return self.error_response(
+                data=str(e),
+                message='xatolik, iltimos backend dasturchiga murojaat qiling'
             )
