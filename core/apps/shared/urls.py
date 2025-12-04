@@ -20,6 +20,8 @@ from core.apps.shared.views import tour_plan as tp_view
 from core.apps.shared.views import factory as factory_view
 # shared support view
 from core.apps.shared.views import support as support_view
+# shared dis product
+from core.apps.shared.views import dis_product as dp_view
 
 
 urlpatterns = [
@@ -90,5 +92,10 @@ urlpatterns = [
             path('send/', support_view.SupportCreateApiView.as_view(), name='support-create-api'),
             path('list/', support_view.SupportListApiView.as_view(), name='support-list-api'),
         ]
-    ))
+    )),
+    path('distributed_product/', include(
+        [
+            path('list/', dp_view.DistributedProductListApiView.as_view()),
+        ]
+    )),
 ]
