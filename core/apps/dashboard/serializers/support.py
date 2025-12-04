@@ -19,7 +19,7 @@ class SupportListSerializer(serializers.ModelSerializer):
         return {
             'id': obj.district.id,
             'name': obj.district.name,
-        }
+        } if obj.district else None
     
     def get_user(self, obj):
         return {

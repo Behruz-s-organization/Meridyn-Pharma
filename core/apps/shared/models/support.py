@@ -13,7 +13,13 @@ class Support(BaseModel):
         ('HELP', 'yordam'),
     )
 
-    district = models.ForeignKey(District, on_delete=models.CASCADE, related_name='supports')
+    district = models.ForeignKey(
+        District,
+        on_delete=models.SET_NULL, 
+        related_name='supports', 
+        blank=True, 
+        null=True
+    )
     problem = models.TextField()
     date = models.DateField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='supports')
