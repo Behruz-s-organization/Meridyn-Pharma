@@ -21,7 +21,7 @@ from core.apps.shared.serializers.dis_product import DistributedProductListSeria
 class DistributedProductListApiView(generics.GenericAPIView, ResponseMixin):
     serializer_class = DistributedProductListSerializer
     queryset = DistributedProduct.objects.all()
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAuthenticated]
 
     @swagger_auto_schema(
         manual_parameters=[
