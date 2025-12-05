@@ -75,6 +75,13 @@ class DoctorViewSet(viewsets.GenericViewSet, ResponseMixin):
                 required=False,
                 type=openapi.TYPE_STRING,
             ),
+            openapi.Parameter(
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_INTEGER,
+                name='user_id',
+                description="user id bo'yicha filter",
+                required=False,
+            ) 
         ],
         operation_description="Shifokorlar ro'yxatini olish",
         operation_summary="Shifokolar ro'yxati",
@@ -147,6 +154,8 @@ class DoctorViewSet(viewsets.GenericViewSet, ResponseMixin):
             work_place = request.query_params.get('work_place', None)
             sphere = request.query_params.get('sphere', None)
             user_full_name = request.query_params.get('user', None)
+            user_id = request.query_params.get('user_id', None)
+
 
             queryset = self.queryset.all()
 
@@ -177,6 +186,8 @@ class DoctorViewSet(viewsets.GenericViewSet, ResponseMixin):
                     Q(user__first_name__istartswith=user_full_name) |
                     Q(user__last_name__istartswith=user_full_name) 
                 )
+            if not user_id is None:
+                queryset = queryset.filter(user__id=user_id)
 
             page = self.paginate_queryset(queryset)
             if page is not None:
