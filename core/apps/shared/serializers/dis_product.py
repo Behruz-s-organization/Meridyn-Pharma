@@ -11,7 +11,7 @@ class DistributedProductListSerializer(serializers.ModelSerializer):
     class Meta:
         model = DistributedProduct
         fields = [
-            'id', 'product', 'quantity', 'employee_name', 'quantity', 'created_at'
+            'id', 'product', 'quantity', 'employee_name', 'quantity', 'created_at', 'date'
         ]
         ref_name = "DisProductListSerializer"
 

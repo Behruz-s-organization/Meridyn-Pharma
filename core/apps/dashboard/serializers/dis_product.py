@@ -12,7 +12,7 @@ class DistributedProductListSerializer(serializers.ModelSerializer):
     class Meta:
         model = DistributedProduct
         fields = [
-            'id', 'product', 'quantity', 'employee_name', 'quantity', 'user', 'created_at'
+            'id', 'product', 'quantity', 'employee_name', 'quantity', 'user', 'created_at', 'date'
         ]
 
     def get_user(self, obj):
