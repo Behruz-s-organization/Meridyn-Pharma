@@ -35,6 +35,8 @@ from core.apps.dashboard.views.location import LocationViewSet, UserLocationView
 from core.apps.dashboard.views.support import SupportListApiView
 # distibuted products
 from core.apps.dashboard.views.dis_prod import DistributedProductListApiView
+# send message
+from core.apps.dashboard.views.send_message import SendMessageToEmployee
 
 
 urlpatterns = [
@@ -82,7 +84,10 @@ urlpatterns = [
         [
             path('list/', DistributedProductListApiView.as_view(), name='distributed-product-list-api'),
         ]
-    ))
+    )),
+
+    # -------------- send message --------------
+    path('send_message/', SendMessageToEmployee.as_view()),
 ]
 
 
