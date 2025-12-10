@@ -2,7 +2,7 @@
 from django.shortcuts import get_object_or_404
 
 # rest framework
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, views
 
 # drf yasg
 from drf_yasg.utils import swagger_auto_schema
@@ -13,6 +13,9 @@ from core.apps.orders.serializers.order import OrderCreateSerializer, OrderListS
 # shared
 from core.apps.shared.utils.response_mixin import ResponseMixin
 from core.apps.shared.serializers.base import BaseResponseSerializer, SuccessResponseSerializer
+
+# services
+from core.services.send_telegram_msg import send_to_telegram
 
 
 class OrderCreateApiView(generics.GenericAPIView, ResponseMixin):
@@ -94,3 +97,27 @@ class OrderUpdateApiView(generics.GenericAPIView, ResponseMixin):
 
         except Exception as e:
             return self.error_response(data=str(e), message='xatolik')
+        
+
+
+class SendFileToTelegramApiView(views.APIView, ResponseMixin):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, id):
+        try:
+            order = Order.objects.filter(id=id).first()
+            if not order:
+                return self.failure_response(
+                    data={},
+                    message="Order not found"
+                )
+            send_to_telegram(request.user.telegram_id, order.id)
+            return self.success_response(
+                data={},
+                message='Succefully send!'
+            )
+        except Exception as e:
+            return self.error_response(
+                data=str(e),
+                message="xatolik, backend dasturchiga murojaat qiling"
+            )

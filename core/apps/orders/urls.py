@@ -19,6 +19,7 @@ urlpatterns = [
             path('list/', order_view.OrderListApiView.as_view(), name='order-list-api'),
             path('create/', order_view.OrderCreateApiView.as_view(), name='order-create-api'),
             path('<int:id>/update/', order_view.OrderUpdateApiView.as_view(), name='order-update-api'),
+            path('<int:id>/send_pdf/', order_view.SendFileToTelegramApiView.as_view(), name='order-send-pdf-api'),
         ]
     )),
 
