@@ -36,6 +36,8 @@ class DistrictCreateSerializer(serializers.Serializer):
         if not user:
             raise serializers.ValidationError({"user_id": "Foydalanuvchi topilmadi"})
         data['user'] = user
+        if District.objects.filter(name=data['name'], user=user).exists():
+            raise serializers.ValidationError({'name': "District qo'shib bolmadi"})
         return data
 
     def create(self, validated_data):

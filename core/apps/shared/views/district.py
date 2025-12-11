@@ -53,6 +53,9 @@ class DistrictCreateApiView(generics.CreateAPIView, ResponseMixin):
             serializer = self.serializer_class(data=request.data)
             if serializer.is_valid():
                 name = serializer.validated_data.get('name')
+                if District.objects.filter(name=name, user=request.user).exists():
+                    return self.failure_response(message="District qo'shib bolmadi")
+                
                 obj = District.objects.create(name=name, user=request.user)
                 return self.success_response(
                     data=district_serializers.DistrictSerializer(obj).data,
