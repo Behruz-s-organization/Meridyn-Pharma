@@ -22,6 +22,7 @@ class UserListSerializer(serializers.ModelSerializer):
             'region',
             'is_active',
             'telegram_id',
+            'is_superuser',
             'created_at'
         ]
     
@@ -29,7 +30,7 @@ class UserListSerializer(serializers.ModelSerializer):
         return {
             'id': obj.region.id,
             'name': obj.region.name,
-        }
+        } if obj.region else None
     
 
 class UserAdminCreateSerializer(serializers.Serializer):
@@ -38,6 +39,7 @@ class UserAdminCreateSerializer(serializers.Serializer):
     region_id = serializers.IntegerField()
     is_active = serializers.BooleanField()
     telegram_id = serializers.CharField()
+    is_superuser = serializers.BooleanField()
 
     def validate(self, data):
         region = Region.objects.filter(id=data['region_id']).first()
@@ -55,6 +57,7 @@ class UserAdminCreateSerializer(serializers.Serializer):
                 region=validated_data.get('region'),
                 is_active=validated_data.get('is_active'),
                 telegram_id=validated_data.get('telegram_id'),
+                is_superuser=validated_data.get('is_superuser'),
             )
         
 
@@ -62,7 +65,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'first_name', 'last_name', 'region', 'is_active', 'telegram_id'
+            'first_name', 'last_name', 'region', 'is_active', 'telegram_id', 'is_superuser'
         ]
     
     def update(self, instance, validated_data):
@@ -70,6 +73,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.region = validated_data.get('region', instance.region)
         instance.is_active = validated_data.get('is_active', instance.is_active)
+        instance.is_superuser = validated_data.get('is_superuser', instance.is_superuser)
         instance.telegram_id = validated_data.get('telegram_id', instance.telegram_id)
         instance.save()
         return instance

@@ -1,5 +1,5 @@
 # rest framework
-from rest_framework import generics
+from rest_framework import generics, permissions
 
 # drf yasg 
 from drf_yasg.utils import swagger_auto_schema  
@@ -8,6 +8,7 @@ from drf_yasg import openapi
 # accounts
 from core.apps.accounts.models import User
 from core.apps.accounts.serializers import user as serializers
+from core.apps.dashboard.serializers.user import UserListSerializer
 
 # shared
 from core.apps.shared.utils.response_mixin import ResponseMixin
@@ -35,3 +36,15 @@ class RegisterUserApiView(generics.GenericAPIView, ResponseMixin):
             return self.failure_response(data=serializer.errors, message='Foydalanuvchi qoshilmadi')
         except Exception as e:
             return self.error_response(data=str(e), message='xatolik')
+        
+
+class GetMeApiView(generics.GenericAPIView, ResponseMixin):
+    serializer_class = UserListSerializer
+    queryset = User.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        serializer = self.serializer_class(request.user)
+        return self.success_response(
+            data=serializer.data
+        )

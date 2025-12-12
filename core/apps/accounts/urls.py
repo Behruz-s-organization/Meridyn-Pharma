@@ -6,6 +6,7 @@ urlpatterns = [
     path('user/', include(
         [
             path('create', user_views.RegisterUserApiView.as_view(), name='user-register-api'),
+            path('me/', user_views.GetMeApiView.as_view()),
         ],
     )),
 ]

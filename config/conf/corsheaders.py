@@ -13,4 +13,5 @@ CORS_ALLOW_METHODS = [
 CSRF_TRUSTED_ORIGINS = [
     'https://api.meridynpharma.com',
     'https://meridynpharma.com',
+    'http://localhost:8000',
 ]
