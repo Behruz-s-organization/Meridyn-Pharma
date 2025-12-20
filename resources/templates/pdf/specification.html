@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+          size: A4 landscape;
+          margin: 10mm;
+        }
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 12px;
+        }
+        .container {
+            width: 100%;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo img {
+            height: 70px;
+        }
+        h2 {
+            text-align: center;
+            margin: 20px 0 5px;
+        }
+        .meta {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 6px;
+            text-align: center;
+        }
+        th {
+            font-weight: bold;
+        }
+        .text-left {
+            text-align: left;
+        }
+        .total {
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 9px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="logo">
+            <img src="meridyn-logo.png">
+        </div>
+    </div>
+
+    <h2>Spetsifikatsiya</h2>
+    <div style="text-align:center;">
+        {{ order.created_at|date:"d.m.Y H:i" }} • {{ order.id }}-sonli
+    </div>
+
+    <div class="meta">
+        <div><b>Sotuvchi:</b> MERIDYN PHARMA MCHJ</div>
+        <div><b>Xaridor:</b> {{ order.customer_name }}</div>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>N</th>
+            <th>Nomi</th>
+            <th>Bazaviy narx</th>
+            <th>Ustama</th>
+            <th>Narx</th>
+            <th>QQS</th>
+            <th>QQS bilan narxi</th>
+            <th>Soni</th>
+            <th>Jami narxi</th>
+            <th>Yaroqlilik</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in items %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td class="text-left">{{ item.product.name }}</td>
+            <td>{{ item.base_price|floatformat:2 }}</td>
+            <td>{{ item.margin }}%</td>
+            <td>
+              {% if item.quantity %}
+                  {% widthratio item.total_price item.quantity 1 as unit_price %}
+                  {{ unit_price|floatformat:2 }}
+              {% else %}
+                  0.00
+              {% endif %}
+            </td>
+            <td>12%</td>
+            <td>{{ item.price_with_vat|floatformat:2 }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.total_price|floatformat:2 }}</td>
+            <td>{{ item.expiry }}</td>
+        </tr>
+        {% endfor %}
+        <tr class="total">
+            <td colspan="8" class="text-left">Jami:</td>
+            <td>{{ order.total_price|floatformat:2 }}</td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="footer">
+        Chop etilgan sana: {{ printed_at|date:"d.m.Y H:i" }}
+    </div>
+
+</div>
+
+</body>
+</html>
