@@ -1,13 +1,20 @@
+import json
+
 # django
 from django.db.models import Q
+from django.http import HttpResponse
 
 # rest framework
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, views
 from rest_framework.decorators import action
 
 # drf yasg
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+
+# openpyxl
+from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment, PatternFill
 
 # dashboard
 from core.apps.dashboard.serializers import pharmacy as serializers
@@ -197,3 +204,113 @@ class PharmacyViewSet(viewsets.GenericViewSet, ResponseMixin):
             )
     
     
+
+class PharmacyExportView(views.APIView, ResponseMixin):
+    permission_classes = [permissions.IsAuthenticated]
+
+    @swagger_auto_schema(
+        tags=['Admin Pharmacies']
+    )    
+    def get(self, request):
+        try:
+            queryset = Pharmacy.objects.select_related(
+                'district', 'place', 'user'
+            ).all()
+            queryset = self.filter_queryset(request, queryset)
+            response = self.create_excel_file(queryset)
+            return response
+        except Exception as e:
+            return self.error_response(
+                data=str(e),
+            )
+    
+    def filter_queryset(self, request, queryset):
+        district_id = request.query_params.get('district_id')
+        if district_id:
+            queryset = queryset.filter(district_id=district_id)
+        
+        place_id = request.query_params.get('place_id')
+        if place_id:
+            queryset = queryset.filter(place_id=place_id)
+        
+        search = request.query_params.get('search')
+        if search:
+            queryset = queryset.filter(
+                Q(name__icontains=search) | 
+                Q(inn__icontains=search)
+            )
+        
+        user_id = request.query_params.get('user_id')
+        if user_id:
+            queryset = queryset.filter(user_id=user_id)
+        
+        return queryset
+    
+    def create_excel_file(self, queryset):
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Dorixonalar"
+        
+        header_fill = PatternFill(
+            start_color="366092", 
+            end_color="366092", 
+            fill_type="solid"
+        )
+        header_font = Font(bold=True, color="FFFFFF", size=12)
+        header_alignment = Alignment(horizontal="center", vertical="center")
+        
+        headers = [
+            'ID',
+            'Nomi',
+            'INN',
+            'Egasining telefoni',
+            "Mas'ul shaxs telefoni",
+            'Tuman',
+            'Joy',
+            'Foydalanuvchi',
+            'Longitude',
+            'Latitude',
+            "Qo'shimcha manzil"
+        ]
+        
+        for col_num, header in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col_num)
+            cell.value = header
+            cell.fill = header_fill
+            cell.font = header_font
+            cell.alignment = header_alignment
+        
+        for row_num, pharmacy in enumerate(queryset, 2):
+            ws.cell(row=row_num, column=1).value = pharmacy.id
+            ws.cell(row=row_num, column=2).value = pharmacy.name
+            ws.cell(row=row_num, column=3).value = pharmacy.inn
+            ws.cell(row=row_num, column=4).value = pharmacy.owner_phone or ''
+            ws.cell(row=row_num, column=5).value = pharmacy.responsible_phone or ''
+            ws.cell(row=row_num, column=6).value = pharmacy.district.name if pharmacy.district else ''
+            ws.cell(row=row_num, column=7).value = pharmacy.place.name if pharmacy.place else ''
+            ws.cell(row=row_num, column=8).value = pharmacy.user.username if pharmacy.user else ''
+            ws.cell(row=row_num, column=9).value = pharmacy.longitude
+            ws.cell(row=row_num, column=10).value = pharmacy.latitude
+            
+            extra_loc = pharmacy.extra_location
+            if extra_loc:
+                ws.cell(row=row_num, column=11).value = json.dumps(
+                    extra_loc, 
+                    ensure_ascii=False
+                )
+            else:
+                ws.cell(row=row_num, column=11).value = ''
+        
+        column_widths = [8, 30, 15, 18, 18, 20, 20, 20, 12, 12, 30]
+        for i, width in enumerate(column_widths, 1):
+            column_letter = ws.cell(row=1, column=i).column_letter
+            ws.column_dimensions[column_letter].width = width
+        
+        response = HttpResponse(
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename=dorixonalar.xlsx'
+        
+        wb.save(response)
+        
+        return response

@@ -18,7 +18,7 @@ from core.apps.dashboard.views.plan import PlanViewSet
 # place
 from core.apps.dashboard.views.place import PlaceViewSet
 # pharmacy
-from core.apps.dashboard.views.pharmacy import PharmacyViewSet
+from core.apps.dashboard.views.pharmacy import PharmacyViewSet, PharmacyExportView
 # product
 from core.apps.dashboard.views.product import ProductViewSet
 # factory
@@ -88,6 +88,9 @@ urlpatterns = [
 
     # -------------- send message --------------
     path('send_message/', SendMessageToEmployee.as_view()),
+
+    # -------------- pharmacy --------------
+    path('pharmacy/export/', PharmacyExportView.as_view()),
 ]
 
 
