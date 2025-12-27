@@ -10,8 +10,8 @@ class Pharmacy(BaseModel):
     # informations
     name = models.CharField(max_length=200)
     inn = models.CharField(max_length=200)
-    owner_phone = models.CharField(max_length=15)
-    responsible_phone = models.CharField(max_length=15)
+    owner_phone = models.CharField(max_length=15, null=True, blank=True)
+    responsible_phone = models.CharField(max_length=15, null=True, blank=True)
     # relations
     district = models.ForeignKey(District, on_delete=models.CASCADE, related_name='pharmacies')
     place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name='pharmacies')
