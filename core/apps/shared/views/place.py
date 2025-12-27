@@ -22,6 +22,7 @@ class PlaceListApiView(generics.GenericAPIView, ResponseMixin):
     serializer_class = PlaceSerializer
     queryset = Place.objects.all()
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = None
 
     @swagger_auto_schema(
         manual_parameters=[
@@ -48,11 +49,6 @@ class PlaceListApiView(generics.GenericAPIView, ResponseMixin):
                 query = query.filter(name__istartswith=search)
             if district_id:
                 query = query.filter(district__id=district_id)
-
-            page = self.paginate_queryset(query)
-            if page is not None:
-                serializer = self.serializer_class(page, many=True)
-                return self.success_response(data=self.paginate_queryset(serializer.data), message='malumotlar fetch qilindi')
 
             serializer = self.serializer_class(query, many=True)
             return self.success_response(data=serializer.data, message='malumotlar fetch qilindi')

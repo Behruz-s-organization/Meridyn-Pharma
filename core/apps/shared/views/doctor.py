@@ -19,6 +19,7 @@ class DoctorListApiView(generics.GenericAPIView, ResponseMixin):
     serializer_class = DoctorListSerializer
     queryset = Doctor.objects.all()
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = None
 
     @swagger_auto_schema(
         responses={

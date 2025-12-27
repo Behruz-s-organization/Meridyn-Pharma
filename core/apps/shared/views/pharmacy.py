@@ -15,6 +15,7 @@ class PharmacyListApiView(generics.GenericAPIView, ResponseMixin):
     serializer_class = PharmacySerializer
     queryset = Pharmacy.objects.all()
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = None
 
     @swagger_auto_schema(
         responses={

@@ -15,6 +15,7 @@ class SupportCreateApiView(generics.GenericAPIView, ResponseMixin):
     serializer_class = SupportCreateSerializer
     queryset = Support.objects.all()
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = None
 
     def post(self, request):
         try:
@@ -85,13 +86,6 @@ class SupportListApiView(generics.GenericAPIView, ResponseMixin):
             if date is not None:
                 queryset = queryset.filter(date=date)
 
-            page = self.paginate_queryset(queryset)
-            if page is not None:
-                serializer = self.serializer_class(page, many=True)
-                return self.success_response(
-                    data=self.get_paginated_response(serializer.data).data,
-                    message="Malumotlar fetch qilindi",
-                )
             serializer = self.serializer_class(queryset, many=True)
             return self.success_response(
                 data=serializer.data,

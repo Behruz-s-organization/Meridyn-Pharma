@@ -18,6 +18,7 @@ from core.apps.shared.utils.response_mixin import ResponseMixin
 class PlanApiView(generics.GenericAPIView, ResponseMixin):
     queryset = Plan.objects.all()
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = None
 
     def get_serializer_class(self):
         if self.request.method == 'POST':

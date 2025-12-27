@@ -18,6 +18,7 @@ class DistrictListApiView(generics.GenericAPIView, ResponseMixin):
     serializer_class = district_serializers.DistrictSerializer
     queryset = District.objects.all()
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = None
 
     @swagger_auto_schema(
         responses={

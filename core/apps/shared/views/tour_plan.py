@@ -19,7 +19,8 @@ class TourPlanListApiView(generics.GenericAPIView, ResponseMixin):
     serializer_class = TourPlanSerializer
     queryset = TourPlan.objects.all()
     permission_classes = [permissions.IsAuthenticated]
-
+    pagination_class = None
+    
     @swagger_auto_schema(
         responses={
             200: SuccessResponseSerializer(),

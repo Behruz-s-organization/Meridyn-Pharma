@@ -15,7 +15,8 @@ class FactoryListApiView(generics.GenericAPIView, ResponseMixin):
     serializer_class = FactorySerializer
     queryset = Factory.objects.all()
     permission_classes = [permissions.IsAuthenticated]
-
+    pagination_class = None
+    
     @swagger_auto_schema(
         tags=["Farmaseftika"],
         operation_description='Farmasevtikani listini olish uchun api',

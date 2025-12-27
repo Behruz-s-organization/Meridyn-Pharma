@@ -15,6 +15,7 @@ from core.apps.shared.utils.response_mixin import ResponseMixin
 class LocationListApiView(generics.GenericAPIView, ResponseMixin):
     serializer_class = LocationSerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = None
 
     def get_queryset(self):
         return Location.objects.filter(user=self.request.user).select_related('district', 'place', 'doctor', 'pharmacy')
