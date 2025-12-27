@@ -10,7 +10,7 @@ from core.apps.dashboard.views import user as user_views
 # district
 from core.apps.dashboard.views import district as district_views
 # doctor
-from core.apps.dashboard.views.doctor import DoctorViewSet
+from core.apps.dashboard.views.doctor import DoctorViewSet, DoctorExportView
 # region
 from core.apps.dashboard.views import region as region_views
 # plan 
@@ -91,6 +91,9 @@ urlpatterns = [
 
     # -------------- pharmacy --------------
     path('pharmacy/export/', PharmacyExportView.as_view()),
+
+    # -------------- doctor --------------
+    path('doctor/export/', DoctorExportView.as_view()),
 ]
 
 

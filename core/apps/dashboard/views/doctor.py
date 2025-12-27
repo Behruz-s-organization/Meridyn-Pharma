@@ -1,14 +1,22 @@
+import json
+
 # django
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from django.http import HttpResponse
 
 # rest framework
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, views
 from rest_framework.decorators import action
 
 # drf yasg
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+
+# openpyxl
+from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
+from io import BytesIO
 
 # dashboard
 from core.apps.dashboard.serializers import doctor as serializers
@@ -286,3 +294,214 @@ class DoctorViewSet(viewsets.GenericViewSet, ResponseMixin):
             )
     
     
+
+class DoctorExportView(views.APIView, ResponseMixin):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    @swagger_auto_schema(
+        tags=['Admin Doctors']
+    )
+    def get(self, request):
+        try:
+            queryset = Doctor.objects.select_related(
+                'district', 'place', 'user'
+            ).all()
+            
+            queryset = self.filter_queryset(request, queryset)
+            
+            excel_file = self.create_excel_file(queryset)
+            
+            response = HttpResponse(
+                excel_file,
+                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            )
+            response['Content-Disposition'] = 'attachment; filename="shifokorlar.xlsx"'
+            response['Content-Length'] = len(excel_file)
+            
+            return response
+            
+        except Exception as e:
+            return self.error_response(
+                data=str(e),
+            )
+    
+    def filter_queryset(self, request, queryset):
+        district_id = request.query_params.get('district_id')
+        if district_id:
+            queryset = queryset.filter(district_id=district_id)
+        
+        place_id = request.query_params.get('place_id')
+        if place_id:
+            queryset = queryset.filter(place_id=place_id)
+        
+        sphere = request.query_params.get('sphere')
+        if sphere:
+            queryset = queryset.filter(sphere__icontains=sphere)
+        
+        work_place = request.query_params.get('work_place')
+        if work_place:
+            queryset = queryset.filter(work_place__icontains=work_place)
+        
+        user_id = request.query_params.get('user_id')
+        if user_id:
+            queryset = queryset.filter(user_id=user_id)
+        
+        return queryset
+    
+    def create_excel_file(self, queryset):
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Shifokorlar"
+        
+        header_fill = PatternFill(
+            start_color="4472C4", 
+            end_color="4472C4", 
+            fill_type="solid"
+        )
+        header_font = Font(bold=True, color="FFFFFF", size=11, name='Arial')
+        header_alignment = Alignment(
+            horizontal="center", 
+            vertical="center",
+            wrap_text=True
+        )
+        
+        thin_border = Border(
+            left=Side(style='thin'),
+            right=Side(style='thin'),
+            top=Side(style='thin'),
+            bottom=Side(style='thin')
+        )
+        
+        headers = [
+            'ID',
+            'Ism',
+            'Familiya',
+            'Telefon raqami',
+            'Ish joyi',
+            'Mutaxassisligi',
+            "Qo'shimcha ma'lumot",
+            'Tuman',
+            'Joy',
+            'Foydalanuvchi',
+            'Longitude',
+            'Latitude',
+            "Qo'shimcha manzil"
+        ]
+        
+        for col_num, header in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col_num)
+            cell.value = header
+            cell.fill = header_fill
+            cell.font = header_font
+            cell.alignment = header_alignment
+            cell.border = thin_border
+        
+        data_font = Font(size=10, name='Arial')
+        data_alignment = Alignment(vertical="center", wrap_text=False)
+        
+        for row_num, doctor in enumerate(queryset, 2):
+            cell = ws.cell(row=row_num, column=1)
+            cell.value = doctor.id
+            cell.font = data_font
+            cell.alignment = data_alignment
+            cell.border = thin_border
+            
+            cell = ws.cell(row=row_num, column=2)
+            cell.value = doctor.first_name
+            cell.font = data_font
+            cell.alignment = data_alignment
+            cell.border = thin_border
+            
+            cell = ws.cell(row=row_num, column=3)
+            cell.value = doctor.last_name
+            cell.font = data_font
+            cell.alignment = data_alignment
+            cell.border = thin_border
+            
+            cell = ws.cell(row=row_num, column=4)
+            cell.value = doctor.phone_number
+            cell.font = data_font
+            cell.alignment = data_alignment
+            cell.border = thin_border
+            
+            cell = ws.cell(row=row_num, column=5)
+            cell.value = doctor.work_place
+            cell.font = data_font
+            cell.alignment = data_alignment
+            cell.border = thin_border
+            
+            cell = ws.cell(row=row_num, column=6)
+            cell.value = doctor.sphere
+            cell.font = data_font
+            cell.alignment = data_alignment
+            cell.border = thin_border
+            
+            cell = ws.cell(row=row_num, column=7)
+            cell.value = doctor.description if doctor.description else ''
+            cell.font = data_font
+            cell.alignment = alignment(vertical="center", wrap_text=True)
+            cell.border = thin_border
+            
+            cell = ws.cell(row=row_num, column=8)
+            cell.value = doctor.district.name if doctor.district else ''
+            cell.font = data_font
+            cell.alignment = data_alignment
+            cell.border = thin_border
+            
+            cell = ws.cell(row=row_num, column=9)
+            cell.value = doctor.place.name if doctor.place else ''
+            cell.font = data_font
+            cell.alignment = data_alignment
+            cell.border = thin_border
+            
+            cell = ws.cell(row=row_num, column=10)
+            cell.value = doctor.user.username if doctor.user else ''
+            cell.font = data_font
+            cell.alignment = data_alignment
+            cell.border = thin_border
+            
+            cell = ws.cell(row=row_num, column=11)
+            cell.value = doctor.longitude
+            cell.font = data_font
+            cell.alignment = data_alignment
+            cell.border = thin_border
+            
+            cell = ws.cell(row=row_num, column=12)
+            cell.value = doctor.latitude
+            cell.font = data_font
+            cell.alignment = data_alignment
+            cell.border = thin_border
+
+            cell = ws.cell(row=row_num, column=13)
+            if doctor.extra_location:
+                try:
+                    cell.value = json.dumps(doctor.extra_location, ensure_ascii=False)
+                except:
+                    cell.value = str(doctor.extra_location)
+            else:
+                cell.value = ''
+            cell.font = data_font
+            cell.alignment = data_alignment
+            cell.border = thin_border
+        
+        ws.column_dimensions['A'].width = 8
+        ws.column_dimensions['B'].width = 18
+        ws.column_dimensions['C'].width = 18
+        ws.column_dimensions['D'].width = 16
+        ws.column_dimensions['E'].width = 30
+        ws.column_dimensions['F'].width = 20
+        ws.column_dimensions['G'].width = 40
+        ws.column_dimensions['H'].width = 20
+        ws.column_dimensions['I'].width = 20
+        ws.column_dimensions['J'].width = 18
+        ws.column_dimensions['K'].width = 12
+        ws.column_dimensions['L'].width = 12
+        ws.column_dimensions['M'].width = 30
+        
+        ws.freeze_panes = 'A2'
+        
+        output = BytesIO()
+        wb.save(output)
+        output.seek(0)
+        
+        return output.getvalue()
