@@ -1,3 +1,7 @@
+# django
+from django.db import transaction
+
+# rest framework
 from rest_framework import serializers
 
 # shared
@@ -25,3 +29,20 @@ class TourPlanUpdateSerializer(serializers.ModelSerializer):
         instance.latitude = validated_data.get('latitude', instance.latitude)
         instance.save()
         return instance
+    
+
+class TourPlanCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TourPlan
+        fields = [
+            'place_name', 'date'
+        ]
+        ref_name = 'CreateTourPlanInWebApp'
+
+    def create(self, validated_data):
+        with transaction.atomic():
+            return TourPlan.objects.create(
+                place_name=validated_data.get('place_name'),
+                date=validated_data.get('date'),
+                user=self.context.get("user"),
+            )

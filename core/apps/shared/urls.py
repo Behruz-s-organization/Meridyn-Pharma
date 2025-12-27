@@ -80,6 +80,7 @@ urlpatterns = [
         [
             path('list/', tp_view.TourPlanListApiView.as_view(), name='tour-plan-list-api'),
             path('<int:id>/update/', tp_view.TourPlanUpdateApiView.as_view()),
+            path('create/', tp_view.TourPlanCreateApiView.as_view(), name='tour-plan-create-api'),
         ]
     )),
     path('factory/', include(
