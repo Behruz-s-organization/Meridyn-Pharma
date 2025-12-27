@@ -439,7 +439,7 @@ class DoctorExportView(views.APIView, ResponseMixin):
             cell = ws.cell(row=row_num, column=7)
             cell.value = doctor.description if doctor.description else ''
             cell.font = data_font
-            cell.alignment = alignment(vertical="center", wrap_text=True)
+            cell.alignment = Alignment(vertical="center", wrap_text=True)
             cell.border = thin_border
             
             cell = ws.cell(row=row_num, column=8)
