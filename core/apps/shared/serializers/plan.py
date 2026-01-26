@@ -9,7 +9,7 @@ from core.apps.shared.models import Plan, Doctor, Pharmacy
 
 
 class PlanCreateSerializer(serializers.Serializer):
-    title = serializers.CharField(max_length=200, required=False)
+    title = serializers.CharField(required=False)
     description = serializers.CharField()
     date = serializers.DateField()
     doctor_id = serializers.IntegerField(required=False, allow_null=True)

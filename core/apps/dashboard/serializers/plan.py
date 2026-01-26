@@ -54,7 +54,7 @@ class PlanListSerializer(serializers.ModelSerializer):
 
 
 class AdminPlanCreateSerializer(serializers.Serializer):
-    title = serializers.CharField()
+    title = serializers.CharField(required=False)
     description = serializers.CharField()
     date = serializers.DateField()
     user_id = serializers.IntegerField()
@@ -107,7 +107,8 @@ class PlanUpdateSerializer(serializers.ModelSerializer):
             'longitude', 'latitude', 'extra_location',
         ]
     extra_kwargs = {
-        "user": {"required": False}
+        "user": {"required": False},
+        'title': {"required": False},
     }
     
     def update(self, instance, validated_data):
