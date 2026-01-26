@@ -35,7 +35,7 @@ class PharmacySerializer(serializers.ModelSerializer):
 
 class PharmacyCreateSerializer(serializers.Serializer):
     name = serializers.CharField()
-    inn = serializers.CharField()
+    inn = serializers.CharField(required=False)
     owner_phone = serializers.CharField(required=False)
     responsible_phone = serializers.CharField(required=False)
     district_id = serializers.IntegerField()
