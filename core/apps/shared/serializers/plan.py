@@ -9,7 +9,7 @@ from core.apps.shared.models import Plan, Doctor, Pharmacy
 
 
 class PlanCreateSerializer(serializers.Serializer):
-    title = serializers.CharField(max_length=200)
+    title = serializers.CharField(max_length=200, required=False)
     description = serializers.CharField()
     date = serializers.DateField()
     doctor_id = serializers.IntegerField(required=False, allow_null=True)
@@ -83,6 +83,9 @@ class PlanUpdateSerializer(serializers.ModelSerializer):
             'comment', 'doctor', 'pharmacy',
             'longitude', 'latitude', 'extra_location',
         ]
+        extra_kwargs = {
+            'title': {'required': False},
+        }
 
     def update(self, instance, validated_data):
         for field, value in validated_data.items():

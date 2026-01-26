@@ -68,6 +68,7 @@ urlpatterns = [
             path('<int:id>/delete/', region_views.RegionDeleteApiView.as_view(), name='region-delete-api'),
         ]
     )),
+    # -------------- payment --------------
     path('payment/', include(
         [
             path('list/', PaymentListApiView.as_view(), name='payment-list-api'),
@@ -85,7 +86,6 @@ urlpatterns = [
             path('list/', DistributedProductListApiView.as_view(), name='distributed-product-list-api'),
         ]
     )),
-
     # -------------- send message --------------
     path('send_message/', SendMessageToEmployee.as_view()),
 
