@@ -9,7 +9,7 @@ from core.apps.accounts.models import User
 class Pharmacy(BaseModel):
     # informations
     name = models.CharField(max_length=200)
-    inn = models.CharField(max_length=200)
+    inn = models.CharField(max_length=200, null=True, blank=True)
     owner_phone = models.CharField(max_length=15, null=True, blank=True)
     responsible_phone = models.CharField(max_length=15, null=True, blank=True)
     # relations
