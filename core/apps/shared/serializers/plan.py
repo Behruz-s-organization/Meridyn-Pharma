@@ -60,6 +60,7 @@ class PlanSerializer(serializers.ModelSerializer):
             'created_at'
         ]
         read_only_fields = ['id', 'is_done', 'created_at']
+        extra_fields = ['title']
 
     def get_doctor(self, obj):
         return {

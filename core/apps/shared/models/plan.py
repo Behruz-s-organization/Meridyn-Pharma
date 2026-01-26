@@ -7,7 +7,7 @@ from core.apps.accounts.models import User
 
 
 class Plan(BaseModel):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, null=True, blank=True)
     description = models.TextField()
     date = models.DateField()
     is_done = models.BooleanField(default=False)
