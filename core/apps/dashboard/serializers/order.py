@@ -80,7 +80,7 @@ class AdminOrderListSerializer(serializers.ModelSerializer):
         model = Order
         fields = [
             'id', 'factory', 'total_price', 'paid_price', 'advance', 'employee_name',
-            'overdue_price', 'order_items', 'file', 'user'
+            'overdue_price', 'order_items', 'file', 'user', 'created_at'
         ]
 
     def get_user(self, obj):
