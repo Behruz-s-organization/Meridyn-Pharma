@@ -1,11 +1,13 @@
 # type: ignore
+from datetime import datetime
+from io import BytesIO
+
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
-from core.apps.orders.models.order import Order
 from weasyprint import HTML
-from io import BytesIO
-from django.conf import settings
-from datetime import datetime
+
+from core.apps.orders.models.order import Order
 
 
 def generate_order_pdf(order_id):

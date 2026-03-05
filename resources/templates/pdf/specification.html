@@ -116,7 +116,7 @@
                         <td>{{ item.total_price|floatformat:2 }}</td>
                         <td>{{ item.expiry }}</td>
                     </tr>
-                    {% endfor %}
+                    {% endif %} {% endfor %}
                     <tr class="total">
                         <td colspan="8" class="text-left">Jami:</td>
                         <td>{{ order.total_price|floatformat:2 }}</td>
