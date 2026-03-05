@@ -1,14 +1,20 @@
 # python
-import asyncio, logging, sys, os
+import asyncio
+import logging
+import os
+import sys
+
 import django
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.base')
+sys.path.append(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+)
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.base")
 django.setup()
 
 # aiogram
-from aiogram import Bot, Dispatcher, types, filters
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
+from aiogram import Bot, Dispatcher, filters, types
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 
 # django
 from django.conf import settings
@@ -23,15 +29,17 @@ dp = Dispatcher()
 async def start_handler(message: types.Message):
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(
-                text="Tizimga kirish",
-                web_app=WebAppInfo(url="https://bot.meridynpharma.com")
-            )]
+            [
+                InlineKeyboardButton(
+                    text="Tizimga kirish",
+                    web_app=WebAppInfo(url="https://bot.meridynpharma.com"),
+                )
+            ]
         ],
     )
     text = """
     🔐 MeridynPharma ish tizimiga kirish
-    
+
 Hurmatli xodim,
 MeridynPharma’ning ichki ish jarayonlarini avtomatlashtirish va kunlik faoliyatni samarali boshqarish uchun mo‘ljallangan Rasmiy Xodimlar Mini-Ilovasiga xush kelibsiz.
 
@@ -52,6 +60,7 @@ Agar mini-app avtomatik ochilmasa, iltimos, tugmani yana bir bor bosing.
 
 async def main():
     await dp.start_polling(bot)
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
