@@ -102,10 +102,11 @@
                         <td>{{ item.base_price|floatformat:2 }}</td>
                         <td>{{ item.margin }}%</td>
                         <td>
-                            {% if item.quantity %} {% widthratio
-                            item.total_price item.quantity 1 as unit_price %} {{
-                            unit_price|floatformat:2 }} {% else %} 0.00 {% endif
-                            %}
+                            {% if item.quantity %}
+                            {% widthratio item.total_price item.quantity 1 as unit_price %}
+                            {{ unit_price|floatformat:2 }}
+                            {% else %} 0.00
+                            {% endif %}
                         </td>
                         <td>12%</td>
                         <td>{{ item.price_with_vat|floatformat:2 }}</td>
@@ -113,7 +114,7 @@
                         <td>{{ item.total_price|floatformat:2 }}</td>
                         <td>{{ item.expiry }}</td>
                     </tr>
-                    {% endif %} {% endfor %}
+                    {% endfor %}
                     <tr class="total">
                         <td colspan="8" class="text-left">Jami:</td>
                         <td>{{ order.total_price|floatformat:2 }}</td>
