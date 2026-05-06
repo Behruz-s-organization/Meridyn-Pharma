@@ -32,7 +32,7 @@ async def start_handler(message: types.Message):
             [
                 InlineKeyboardButton(
                     text="Tizimga kirish",
-                    web_app=WebAppInfo(url="https://bot.meridynpharma.com"),
+                    web_app=WebAppInfo(url="https://tj.meridynpharma.com"),
                 )
             ]
         ],
