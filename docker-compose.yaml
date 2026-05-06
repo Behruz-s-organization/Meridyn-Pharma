@@ -31,11 +31,14 @@ services:
     environment:
       - PYTHONPYCACHEPREFIX=/var/cache/pycache
     volumes:
-      - '.:/code'
+      - ".:/code"
     depends_on:
       - db
       - redis
     restart: always
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
 
   db:
     image: postgres:17
@@ -48,7 +51,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
     restart: always
-  
+
   redis:
     image: redis
     networks:
